@@ -1,0 +1,17 @@
+# Игнорировать нижеперечисленные папки и файлы
+.github/
+.idea/
+allure-results/
+docs/
+node_modules/
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
+/playwright/.auth/
+README.MD
+settings-example.ts
+settings.ts
+playwright.config.ts
+example.spec.ts
+temp.spec.ts

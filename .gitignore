@@ -1,0 +1,13 @@
+allure-results/
+allure-report/
+allure-report-file/
+test-results/
+node_modules/
+playwright-report/
+tmp/
+.venv/
+.idea/
+trace/
+/blob-report/
+/playwright/.auth/
+settings.ts
