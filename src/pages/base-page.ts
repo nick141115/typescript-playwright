@@ -130,7 +130,7 @@ export class BasePage {
   /** Сообщение об ошибке. */
   private static readonly ERROR_MESSAGE: string =
     "Выпадающая строка с нужным сотрудником должна была исчезнуть за 30 секунд";
-  /** Регулярное выражения для поиска текста 'Найдено <любое число> компонент(а/ов)'. */
+  /** Регулярное выражения для поиска текста 'Найдено (любое число) компонент(а/ов)'. */
   private static readonly COMPONENTS_FOUND_PATTERN: RegExp = /Найдено \d+ компонент[а-я]*/;
   private static readonly ERROR_MESSAGE_RESPONSIBLE_FOR_IMPLEMENTATION: string =
     "Выпадающий список 'Ответственный за реализацию' недоступен.";
@@ -200,8 +200,10 @@ export class BasePage {
 
   /** Ожидать исчезновения последнего локатора LOADING. */
   public async waitForPageReady(): Promise<void> {
-    await this.page.waitForTimeout(5_000);
-    await expect(this.page.locator(BasePage.LOADING).last()).not.toBeAttached();
+    await allure.step(`Ожидать исчезновения последнего локатора LOADING.`, async () => {
+      await this.page.waitForTimeout(5_000);
+      await expect(this.page.locator(BasePage.LOADING).last()).not.toBeAttached();
+    });
   }
 
   /** Обновить страницу. */
@@ -214,11 +216,13 @@ export class BasePage {
 
   /** Проверить заголовок-ссылку 'Архитектурный репозиторий'. */
   public async checkTitle(): Promise<void> {
-    await expect(
-      this.locatorTitleArchitecturalRepository,
-      "Заголовок 'Архитектурный репозиторий' не отображается",
-    ).toBeVisible({
-      timeout: Settings.DEFAULT_TIMEOUT,
+    await allure.step(`Проверить заголовок-ссылку 'Архитектурный репозиторий'.`, async () => {
+      await expect(
+        this.locatorTitleArchitecturalRepository,
+        "Заголовок 'Архитектурный репозиторий' не отображается",
+      ).toBeVisible({
+        timeout: Settings.DEFAULT_TIMEOUT,
+      });
     });
   }
 
@@ -254,9 +258,11 @@ export class BasePage {
   public async logout(): Promise<void> {
     const locatorLogoutButton: Locator = this.page.getByRole(Roles.BUTTON, { name: BasePage.LOGOUT_BUTTON });
 
-    await expect(locatorLogoutButton, "Кнопка 'Выйти' не отображается").toBeVisible();
-    await expect(locatorLogoutButton, "Кнопка 'Выйти' недоступна").toBeEnabled();
-    await locatorLogoutButton.click();
+    await allure.step(`Нажать кнопку 'Выйти'.`, async () => {
+      await expect(locatorLogoutButton, "Кнопка 'Выйти' не отображается").toBeVisible();
+      await expect(locatorLogoutButton, "Кнопка 'Выйти' недоступна").toBeEnabled();
+      await locatorLogoutButton.click();
+    });
   }
 
   /** Быстро выйти из сервиса. */
@@ -328,61 +334,78 @@ export class BasePage {
    * @param count Количество компонентов.
    */
   public async checkTextTotalComponents(count: number): Promise<void> {
-    await expect(
-      this.page.getByText(`Всего ${count} компонент`),
-      `Текст 'Всего ${count} компонент(а/ов)' не отображается на странице`,
-    ).toBeVisible({
-      timeout: Settings.DEFAULT_TIMEOUT,
+    await allure.step(`Проверить наличие текста на странице 'Всего * компонент(а/ов)'.`, async () => {
+      await expect(
+        this.page.getByText(`Всего ${count} компонент`),
+        `Текст 'Всего ${count} компонент(а/ов)' не отображается на странице`,
+      ).toBeVisible({
+        timeout: Settings.DEFAULT_TIMEOUT,
+      });
     });
   }
 
-  /** Проверить наличие текста на странице 'Всего <любое число> компонент(а/ов)'. */
+  /** Проверить наличие текста на странице 'Всего (любое число) компонент(а/ов)'. */
   public async checkTextTotalComponentsWithAnyNumber(): Promise<void> {
-    await expect(
-      this.page.getByText(/Всего \d+ компонент/),
-      "Текст 'Всего <любое число> компонент(а/ов)' не отображается на странице",
-    ).toBeVisible({
-      timeout: Settings.DEFAULT_TIMEOUT,
+    await allure.step(`Проверить наличие текста на странице 'Всего (любое число) 
+компонент(а/ов)'.`, async () => {
+      await expect(
+        this.page.getByText(/Всего \d+ компонент/),
+        "Текст 'Всего (любое число) компонент(а/ов)' не отображается на странице",
+      ).toBeVisible({
+        timeout: Settings.DEFAULT_TIMEOUT,
+      });
     });
   }
 
-  /** Проверить наличие текста на странице 'Всего <любое число> продукт(а/ов)'. */
+  /** Проверить наличие текста на странице 'Всего (любое число) продукт(а/ов)'. */
   public async checkTextTotalProductsWithAnyNumber(): Promise<void> {
-    await expect(
-      this.page.getByText(/Всего \d+ продукт/),
-      "Текст 'Всего <любое число> продукт(а/ов)' не отображается на странице",
-    ).toBeVisible({
-      timeout: Settings.DEFAULT_TIMEOUT,
+    await allure.step(`Проверить наличие текста на странице 'Всего (любое число) 
+продукт(а/ов)'.`, async () => {
+      await expect(
+        this.page.getByText(/Всего \d+ продукт/),
+        "Текст 'Всего (любое число) продукт(а/ов)' не отображается на странице",
+      ).toBeVisible({
+        timeout: Settings.DEFAULT_TIMEOUT,
+      });
     });
   }
 
-  /** Проверить наличие текста на странице 'Всего <любое число> верс(ия/ий/ии)'. */
+  /** Проверить наличие текста на странице 'Всего (любое число) верс(ия/ий/ии)'. */
   public async checkTextTotalVersionsWithAnyNumber(): Promise<void> {
-    await expect(
-      this.page.getByText(/Всего \d+ верс[а-я]*/),
-      "Текст 'Всего <любое число> верс(ия/ий/ии)' не отображается на странице",
-    ).toBeVisible({
-      timeout: Settings.DEFAULT_TIMEOUT,
+    await allure.step(`Проверить наличие текста на странице 'Всего (любое число) 
+верс(ия/ий/ии)'.`, async () => {
+      await expect(
+        this.page.getByText(/Всего \d+ верс[а-я]*/),
+        "Текст 'Всего (любое число) верс(ия/ий/ии)' не отображается на странице",
+      ).toBeVisible({
+        timeout: Settings.DEFAULT_TIMEOUT,
+      });
     });
   }
 
-  /** Проверить наличие текста на странице 'Всего <любое число> сбор(ка/ки/ок)'. */
+  /** Проверить наличие текста на странице 'Всего (любое число) сбор(ка/ки/ок)'. */
   public async checkTextTotalAssembliesWithAnyNumber(): Promise<void> {
-    await expect(
-      this.page.getByText(/Всего \d+ сбор[а-я]*/),
-      "Текст 'Всего <любое число> сбор(ка/ки/ок)' не отображается на странице",
-    ).toBeVisible({
-      timeout: Settings.DEFAULT_TIMEOUT,
+    await allure.step(`Проверить наличие текста на странице 'Всего (любое число) 
+сбор(ка/ки/ок)'.`, async () => {
+      await expect(
+        this.page.getByText(/Всего \d+ сбор[а-я]*/),
+        "Текст 'Всего (любое число) сбор(ка/ки/ок)' не отображается на странице",
+      ).toBeVisible({
+        timeout: Settings.DEFAULT_TIMEOUT,
+      });
     });
   }
 
-  /** Проверить наличие текста на странице 'Всего <любое число> пакет(а/ов)'. */
+  /** Проверить наличие текста на странице 'Всего (любое число) пакет(а/ов)'. */
   public async checkTextTotalPackagesWithAnyNumber(): Promise<void> {
-    await expect(
-      this.page.getByText(/Всего \d+ пакет[а-я]*/),
-      "Текст 'Всего <любое число> пакет(а/ов)' не отображается на странице",
-    ).toBeVisible({
-      timeout: Settings.DEFAULT_TIMEOUT,
+    await allure.step(`Проверить наличие текста на странице 'Всего (любое число)
+пакет(а/ов)'.`, async () => {
+      await expect(
+        this.page.getByText(/Всего \d+ пакет[а-я]*/),
+        "Текст 'Всего (любое число) пакет(а/ов)' не отображается на странице",
+      ).toBeVisible({
+        timeout: Settings.DEFAULT_TIMEOUT,
+      });
     });
   }
 
@@ -391,11 +414,13 @@ export class BasePage {
    * @param count Количество компонентов.
    */
   public async checkTextComponentsFound(count: number): Promise<void> {
-    await expect(
-      this.page.getByText(`Найдено ${count} компонент`),
-      `Текст 'Найдено ${count} компонент(а/ов)' не отображается на странице`,
-    ).toBeVisible({
-      timeout: Settings.DEFAULT_TIMEOUT,
+    await allure.step(`Проверить наличие текста на странице 'Найдено * компонент(а/ов)'.`, async () => {
+      await expect(
+        this.page.getByText(`Найдено ${count} компонент`),
+        `Текст 'Найдено ${count} компонент(а/ов)' не отображается на странице`,
+      ).toBeVisible({
+        timeout: Settings.DEFAULT_TIMEOUT,
+      });
     });
   }
 
@@ -404,60 +429,76 @@ export class BasePage {
    * @param count Количество продуктов.
    */
   public async checkTextProductsFound(count: number): Promise<void> {
-    await expect(
-      this.page.getByText(`Найдено ${count} продукт`),
-      `Текст 'Найдено ${count} продукт(а/ов)' не отображается на странице`,
-    ).toBeVisible({
-      timeout: Settings.DEFAULT_TIMEOUT,
+    await allure.step(`Проверить наличие текста на странице 'Найдено * продукт(а/ов)'.`, async () => {
+      await expect(
+        this.page.getByText(`Найдено ${count} продукт`),
+        `Текст 'Найдено ${count} продукт(а/ов)' не отображается на странице`,
+      ).toBeVisible({
+        timeout: Settings.DEFAULT_TIMEOUT,
+      });
     });
   }
 
-  /** Проверить наличие текста на странице 'Найдено <любое число> продукт(а/ов)'. */
+  /** Проверить наличие текста на странице 'Найдено (любое число) продукт(а/ов)'. */
   public async checkTextProductsFoundWithAnyNumber(): Promise<void> {
-    await expect(
-      this.page.getByText(/Найдено \d+ продукт[а-я]*/),
-      "Текст 'Найдено <любое число> продукт(а/ов)' не отображается на странице",
-    ).toBeVisible({
-      timeout: Settings.DEFAULT_TIMEOUT,
+    await allure.step(`Проверить наличие текста на странице 'Найдено (любое число) 
+продукт(а/ов)'.`, async () => {
+      await expect(
+        this.page.getByText(/Найдено \d+ продукт[а-я]*/),
+        "Текст 'Найдено (любое число) продукт(а/ов)' не отображается на странице",
+      ).toBeVisible({
+        timeout: Settings.DEFAULT_TIMEOUT,
+      });
     });
   }
 
-  /** Проверить наличие текста на странице 'Найдено <любое число> верс(ия/ий/ии)'. */
+  /** Проверить наличие текста на странице 'Найдено (любое число) верс(ия/ий/ии)'. */
   public async checkTextVersionsFoundWithAnyNumber(): Promise<void> {
-    await expect(
-      this.page.getByText(/Найдено \d+ верс[а-я]*/),
-      "Текст 'Найдено <любое число> верс(ия/ий/ии)' не отображается на странице",
-    ).toBeVisible({
-      timeout: Settings.DEFAULT_TIMEOUT,
+    await allure.step(`Проверить наличие текста на странице 'Найдено (любое число) 
+верс(ия/ий/ии)'.`, async () => {
+      await expect(
+        this.page.getByText(/Найдено \d+ верс[а-я]*/),
+        "Текст 'Найдено (любое число) верс(ия/ий/ии)' не отображается на странице",
+      ).toBeVisible({
+        timeout: Settings.DEFAULT_TIMEOUT,
+      });
     });
   }
 
-  /** Проверить наличие текста на странице 'Найдено <любое число> сбор(ка/ки/ок)'. */
+  /** Проверить наличие текста на странице 'Найдено (любое число) сбор(ка/ки/ок)'. */
   public async checkTextAssembliesFoundWithAnyNumber(): Promise<void> {
-    await expect(
-      this.page.getByText(/Найдено \d+ сбор[а-я]*/),
-      "Текст 'Найдено <любое число> сбор(ка/ки/ок)' не отображается на странице",
-    ).toBeVisible({
-      timeout: Settings.DEFAULT_TIMEOUT,
+    await allure.step(`Проверить наличие текста на странице 'Найдено (любое число) 
+сбор(ка/ки/ок)'.`, async () => {
+      await expect(
+        this.page.getByText(/Найдено \d+ сбор[а-я]*/),
+        "Текст 'Найдено (любое число) сбор(ка/ки/ок)' не отображается на странице",
+      ).toBeVisible({
+        timeout: Settings.DEFAULT_TIMEOUT,
+      });
     });
   }
 
-  /** Проверить наличие текста на странице 'Найдено <любое число> компонент(а/ов)'. */
+  /** Проверить наличие текста на странице 'Найдено (любое число) компонент(а/ов)'. */
   public async checkTextComponentsFoundWithAnyNumber(): Promise<void> {
-    await expect(
-      this.locatorComponentsFoundPattern,
-      "Текст 'Найдено <любое число> компонент(а/ов)' не отображается на странице",
-    ).toBeVisible({
-      timeout: Settings.DEFAULT_TIMEOUT,
+    await allure.step(`Проверить наличие текста на странице 'Найдено (любое число) 
+компонент(а/ов)'.`, async () => {
+      await expect(
+        this.locatorComponentsFoundPattern,
+        "Текст 'Найдено (любое число) компонент(а/ов)' не отображается на странице",
+      ).toBeVisible({
+        timeout: Settings.DEFAULT_TIMEOUT,
+      });
     });
   }
 
-  /** Получить строку 'Найдено <любое число> компонент(а/ов)'.
+  /** Получить строку 'Найдено (любое число) компонент(а/ов)'.
    *
-   * @return Строка 'Найдено <любое число> компонент(а/ов)'.
+   * @return Строка 'Найдено (любое число) компонент(а/ов)'.
    */
   public async getTextComponentsFoundWithAnyNumber(): Promise<string> {
-    await this.page.waitForTimeout(7_000);
+    await allure.step(`Получить строку 'Найдено (любое число) компонент(а/ов)'.`, async () => {
+      await this.page.waitForTimeout(7_000);
+    });
     return this.locatorComponentsFoundPattern.innerText({ timeout: Settings.DEFAULT_TIMEOUT });
   }
 
@@ -468,11 +509,13 @@ export class BasePage {
    * @param exact Частичное совпадение по тексту (если 'True', то будет точное совпадение).
    */
   public async checkLinksCount(linkText: string, count: number, exact: boolean = false): Promise<void> {
-    await expect(
-      this.page.getByRole(Roles.LINK, { name: linkText, exact }),
-      `Ссылка с текстом '${linkText}' не отображается на странице или количество таких ссылок не
- соответствует ожидаемому (ожидаемое количество: ${count})`,
-    ).toHaveCount(count, { timeout: Settings.DEFAULT_TIMEOUT });
+    await allure.step(`Проверить количество ссылок на странице.`, async () => {
+      await expect(
+        this.page.getByRole(Roles.LINK, { name: linkText, exact }),
+        `Ссылка с текстом '${linkText}' не отображается на странице или количество таких ссылок не 
+соответствует ожидаемому (ожидаемое количество: ${count})`,
+      ).toHaveCount(count, { timeout: Settings.DEFAULT_TIMEOUT });
+    });
   }
 
   /** Проверить первый выпадающий список на странице.
@@ -484,34 +527,38 @@ export class BasePage {
 '${placeholder}'.`;
     const errorMessageNotDisplayed: string = "Первый выпадающий список на странице не отображается.";
 
-    if (placeholder == UITextElements.ABSENT) {
-      await expect(
-        this.locatorFirstComboBox.locator(BasePage.COMPONENT_COMBO_BOX_INPUT),
-        errorMessageNotDisplayed,
-      ).toBeVisible({ timeout: Settings.DEFAULT_TIMEOUT });
-      await expect(
-        this.locatorFirstComboBox.locator(BasePage.COMPONENT_COMBO_BOX_INPUT),
-        BasePage.ERROR_MESSAGE_FIRST_COMBO_BOX,
-      ).toBeEnabled();
-      await expect(
-        this.locatorFirstComboBox.locator(BasePage.COMPONENT_COMBO_BOX_INPUT),
-        errorMessagePlaceholder,
-      ).toHaveAttribute(BasePage.PLACEHOLDER, placeholder, { timeout: Settings.DEFAULT_TIMEOUT });
-    } else {
-      await expect(this.locatorFirstComboBoxText, errorMessageNotDisplayed).toBeVisible({
-        timeout: Settings.DEFAULT_TIMEOUT,
-      });
-      await expect(this.locatorFirstComboBoxText, BasePage.ERROR_MESSAGE_FIRST_COMBO_BOX).toBeEnabled();
-      await expect(this.locatorFirstComboBoxText, errorMessagePlaceholder).toHaveText(placeholder, {
-        timeout: Settings.DEFAULT_TIMEOUT,
-      });
-    }
+    await allure.step(`Проверить первый выпадающий список на странице.`, async () => {
+      if (placeholder == UITextElements.ABSENT) {
+        await expect(
+          this.locatorFirstComboBox.locator(BasePage.COMPONENT_COMBO_BOX_INPUT),
+          errorMessageNotDisplayed,
+        ).toBeVisible({ timeout: Settings.DEFAULT_TIMEOUT });
+        await expect(
+          this.locatorFirstComboBox.locator(BasePage.COMPONENT_COMBO_BOX_INPUT),
+          BasePage.ERROR_MESSAGE_FIRST_COMBO_BOX,
+        ).toBeEnabled();
+        await expect(
+          this.locatorFirstComboBox.locator(BasePage.COMPONENT_COMBO_BOX_INPUT),
+          errorMessagePlaceholder,
+        ).toHaveAttribute(BasePage.PLACEHOLDER, placeholder, { timeout: Settings.DEFAULT_TIMEOUT });
+      } else {
+        await expect(this.locatorFirstComboBoxText, errorMessageNotDisplayed).toBeVisible({
+          timeout: Settings.DEFAULT_TIMEOUT,
+        });
+        await expect(this.locatorFirstComboBoxText, BasePage.ERROR_MESSAGE_FIRST_COMBO_BOX).toBeEnabled();
+        await expect(this.locatorFirstComboBoxText, errorMessagePlaceholder).toHaveText(placeholder, {
+          timeout: Settings.DEFAULT_TIMEOUT,
+        });
+      }
+    });
   }
 
   /** Кликнуть на первый выпадающий список на странице. */
   public async clickOnFirstComboBox(): Promise<void> {
-    await expect(this.locatorFirstComboBox, BasePage.ERROR_MESSAGE_FIRST_COMBO_BOX).toBeEnabled();
-    await this.locatorFirstComboBox.click();
+    await allure.step(`Кликнуть на первый выпадающий список на странице.`, async () => {
+      await expect(this.locatorFirstComboBox, BasePage.ERROR_MESSAGE_FIRST_COMBO_BOX).toBeEnabled();
+      await this.locatorFirstComboBox.click();
+    });
   }
 
   /** Проверить выпадающий список 'Ответственный за реализацию'.
@@ -523,40 +570,44 @@ export class BasePage {
 placeholder '${placeholder}'.`;
     const errorMessageNotDisplayed: string = "Выпадающий список 'Ответственный за реализацию' не отображается.";
 
-    if (placeholder == UITextElements.ABSENT) {
-      await expect(
-        this.locatorResponsibleForImplementation.locator(BasePage.COMPONENT_COMBO_BOX_INPUT),
-        errorMessageNotDisplayed,
-      ).toBeVisible({ timeout: Settings.DEFAULT_TIMEOUT });
-      await expect(
-        this.locatorResponsibleForImplementation.locator(BasePage.COMPONENT_COMBO_BOX_INPUT),
-        BasePage.ERROR_MESSAGE_RESPONSIBLE_FOR_IMPLEMENTATION,
-      ).toBeEnabled();
-      await expect(
-        this.locatorResponsibleForImplementation.locator(BasePage.COMPONENT_COMBO_BOX_INPUT),
-        errorMessagePlaceholder,
-      ).toHaveAttribute(BasePage.PLACEHOLDER, placeholder, { timeout: Settings.DEFAULT_TIMEOUT });
-    } else {
-      await expect(this.locatorResponsibleForImplementationText, errorMessageNotDisplayed).toBeVisible({
-        timeout: Settings.DEFAULT_TIMEOUT,
-      });
-      await expect(
-        this.locatorResponsibleForImplementationText,
-        BasePage.ERROR_MESSAGE_RESPONSIBLE_FOR_IMPLEMENTATION,
-      ).toBeEnabled();
-      await expect(this.locatorResponsibleForImplementationText, errorMessagePlaceholder).toHaveText(placeholder, {
-        timeout: Settings.DEFAULT_TIMEOUT,
-      });
-    }
+    await allure.step(`Проверить выпадающий список 'Ответственный за реализацию'.`, async () => {
+      if (placeholder == UITextElements.ABSENT) {
+        await expect(
+          this.locatorResponsibleForImplementation.locator(BasePage.COMPONENT_COMBO_BOX_INPUT),
+          errorMessageNotDisplayed,
+        ).toBeVisible({ timeout: Settings.DEFAULT_TIMEOUT });
+        await expect(
+          this.locatorResponsibleForImplementation.locator(BasePage.COMPONENT_COMBO_BOX_INPUT),
+          BasePage.ERROR_MESSAGE_RESPONSIBLE_FOR_IMPLEMENTATION,
+        ).toBeEnabled();
+        await expect(
+          this.locatorResponsibleForImplementation.locator(BasePage.COMPONENT_COMBO_BOX_INPUT),
+          errorMessagePlaceholder,
+        ).toHaveAttribute(BasePage.PLACEHOLDER, placeholder, { timeout: Settings.DEFAULT_TIMEOUT });
+      } else {
+        await expect(this.locatorResponsibleForImplementationText, errorMessageNotDisplayed).toBeVisible({
+          timeout: Settings.DEFAULT_TIMEOUT,
+        });
+        await expect(
+          this.locatorResponsibleForImplementationText,
+          BasePage.ERROR_MESSAGE_RESPONSIBLE_FOR_IMPLEMENTATION,
+        ).toBeEnabled();
+        await expect(this.locatorResponsibleForImplementationText, errorMessagePlaceholder).toHaveText(placeholder, {
+          timeout: Settings.DEFAULT_TIMEOUT,
+        });
+      }
+    });
   }
 
   /** Кликнуть на выпадающий список 'Ответственный за реализацию'. */
   public async clickOnResponsibleForImplementationOfComponentComboBox(): Promise<void> {
-    await expect(
-      this.locatorResponsibleForImplementation,
-      BasePage.ERROR_MESSAGE_RESPONSIBLE_FOR_IMPLEMENTATION,
-    ).toBeEnabled();
-    await this.locatorResponsibleForImplementation.click();
+    await allure.step(`Кликнуть на выпадающий список 'Ответственный за реализацию'.`, async () => {
+      await expect(
+        this.locatorResponsibleForImplementation,
+        BasePage.ERROR_MESSAGE_RESPONSIBLE_FOR_IMPLEMENTATION,
+      ).toBeEnabled();
+      await this.locatorResponsibleForImplementation.click();
+    });
   }
 
   /** Ввести текст в выпадающий список 'Ответственный за реализацию'.
@@ -568,15 +619,17 @@ placeholder '${placeholder}'.`;
     fullName: string,
     clickOnTooltip: boolean = true,
   ): Promise<void> {
-    await this.locatorResponsibleForImplementation.pressSequentially(fullName);
-    await this.waitForPageReady();
-    if (clickOnTooltip) {
-      await this.locatorSearchResultsFullName.click();
-      await expect(this.locatorSearchResultsFullName, BasePage.ERROR_MESSAGE).not.toBeVisible({
-        timeout: Settings.DEFAULT_TIMEOUT,
-      });
-      await this.page.waitForTimeout(1_000);
-    }
+    await allure.step(`Ввести текст в выпадающий список 'Ответственный за реализацию'.`, async () => {
+      await this.locatorResponsibleForImplementation.pressSequentially(fullName);
+      await this.waitForPageReady();
+      if (clickOnTooltip) {
+        await this.locatorSearchResultsFullName.click();
+        await expect(this.locatorSearchResultsFullName, BasePage.ERROR_MESSAGE).not.toBeVisible({
+          timeout: Settings.DEFAULT_TIMEOUT,
+        });
+        await this.page.waitForTimeout(1_000);
+      }
+    });
   }
 
   /** Проверить выпадающий список 'Владелец'.
@@ -587,34 +640,38 @@ placeholder '${placeholder}'.`;
     const errorMessage: string = `Выпадающий список 'Владелец' не содержит ожидаемый placeholder '${placeholder}'.`;
     const errorMessageNotDisplayed: string = "Выпадающий список 'Владелец' не отображается.";
 
-    if (placeholder == UITextElements.ABSENT) {
-      await expect(
-        this.locatorComponentOwnerComboBox.locator(BasePage.COMPONENT_COMBO_BOX_INPUT),
-        errorMessageNotDisplayed,
-      ).toBeVisible({ timeout: Settings.DEFAULT_TIMEOUT });
-      await expect(
-        this.locatorComponentOwnerComboBox.locator(BasePage.COMPONENT_COMBO_BOX_INPUT),
-        BasePage.ERROR_MESSAGE_OWNER,
-      ).toBeEnabled();
-      await expect(
-        this.locatorComponentOwnerComboBox.locator(BasePage.COMPONENT_COMBO_BOX_INPUT),
-        errorMessage,
-      ).toHaveAttribute(BasePage.PLACEHOLDER, placeholder, { timeout: Settings.DEFAULT_TIMEOUT });
-    } else {
-      await expect(this.locatorComponentOwnerComboBoxText, errorMessageNotDisplayed).toBeVisible({
-        timeout: Settings.DEFAULT_TIMEOUT,
-      });
-      await expect(this.locatorComponentOwnerComboBoxText, BasePage.ERROR_MESSAGE_OWNER).toBeEnabled();
-      await expect(this.locatorComponentOwnerComboBoxText, errorMessage).toHaveText(placeholder, {
-        timeout: Settings.DEFAULT_TIMEOUT,
-      });
-    }
+    await allure.step(`Проверить выпадающий список 'Владелец'.`, async () => {
+      if (placeholder == UITextElements.ABSENT) {
+        await expect(
+          this.locatorComponentOwnerComboBox.locator(BasePage.COMPONENT_COMBO_BOX_INPUT),
+          errorMessageNotDisplayed,
+        ).toBeVisible({ timeout: Settings.DEFAULT_TIMEOUT });
+        await expect(
+          this.locatorComponentOwnerComboBox.locator(BasePage.COMPONENT_COMBO_BOX_INPUT),
+          BasePage.ERROR_MESSAGE_OWNER,
+        ).toBeEnabled();
+        await expect(
+          this.locatorComponentOwnerComboBox.locator(BasePage.COMPONENT_COMBO_BOX_INPUT),
+          errorMessage,
+        ).toHaveAttribute(BasePage.PLACEHOLDER, placeholder, { timeout: Settings.DEFAULT_TIMEOUT });
+      } else {
+        await expect(this.locatorComponentOwnerComboBoxText, errorMessageNotDisplayed).toBeVisible({
+          timeout: Settings.DEFAULT_TIMEOUT,
+        });
+        await expect(this.locatorComponentOwnerComboBoxText, BasePage.ERROR_MESSAGE_OWNER).toBeEnabled();
+        await expect(this.locatorComponentOwnerComboBoxText, errorMessage).toHaveText(placeholder, {
+          timeout: Settings.DEFAULT_TIMEOUT,
+        });
+      }
+    });
   }
 
   /** Кликнуть на выпадающий список 'Владелец'. */
   public async clickOnComponentOwnerComboBox(): Promise<void> {
-    await expect(this.locatorComponentOwnerComboBox, BasePage.ERROR_MESSAGE_OWNER).toBeEnabled();
-    await this.locatorComponentOwnerComboBox.click();
+    await allure.step(`Кликнуть на выпадающий список 'Владелец'.`, async () => {
+      await expect(this.locatorComponentOwnerComboBox, BasePage.ERROR_MESSAGE_OWNER).toBeEnabled();
+      await this.locatorComponentOwnerComboBox.click();
+    });
   }
 
   /** Ввести текст в выпадающий список 'Владелец'.
@@ -622,13 +679,15 @@ placeholder '${placeholder}'.`;
    * @param fullName ФИО технического эксперта компонента.
    */
   public async fillInComponentOwnerComboBox(fullName: string): Promise<void> {
-    await this.locatorComponentOwnerComboBox.pressSequentially(fullName);
-    await this.waitForPageReady();
-    await this.locatorSearchResultsFullName.click();
-    await expect(this.locatorSearchResultsFullName, BasePage.ERROR_MESSAGE).not.toBeVisible({
-      timeout: Settings.DEFAULT_TIMEOUT,
+    await allure.step(`Ввести текст в выпадающий список 'Владелец'.`, async () => {
+      await this.locatorComponentOwnerComboBox.pressSequentially(fullName);
+      await this.waitForPageReady();
+      await this.locatorSearchResultsFullName.click();
+      await expect(this.locatorSearchResultsFullName, BasePage.ERROR_MESSAGE).not.toBeVisible({
+        timeout: Settings.DEFAULT_TIMEOUT,
+      });
+      await this.page.waitForTimeout(1_000);
     });
-    await this.page.waitForTimeout(1_000);
   }
 
   /** Проверить выпадающий список 'Технический эксперт'.
