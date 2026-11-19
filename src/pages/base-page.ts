@@ -699,34 +699,38 @@ placeholder '${placeholder}'.`;
 '${placeholder}'.`;
     const errorMessageNotDisplayed: string = "Выпадающий список 'Технический эксперт' не отображается.";
 
-    if (placeholder == UITextElements.ABSENT) {
-      await expect(
-        this.locatorTechnicalExpertComboBox.locator(BasePage.COMPONENT_COMBO_BOX_INPUT),
-        errorMessageNotDisplayed,
-      ).toBeVisible({ timeout: Settings.DEFAULT_TIMEOUT });
-      await expect(
-        this.locatorTechnicalExpertComboBox.locator(BasePage.COMPONENT_COMBO_BOX_INPUT),
-        BasePage.ERROR_MESSAGE_TECHNICAL_EXPERT,
-      ).toBeEnabled();
-      await expect(
-        this.locatorTechnicalExpertComboBox.locator(BasePage.COMPONENT_COMBO_BOX_INPUT),
-        errorMessage,
-      ).toHaveAttribute(BasePage.PLACEHOLDER, placeholder, { timeout: Settings.DEFAULT_TIMEOUT });
-    } else {
-      await expect(this.locatorTechnicalExpertComboBoxText, errorMessageNotDisplayed).toBeVisible({
-        timeout: Settings.DEFAULT_TIMEOUT,
-      });
-      await expect(this.locatorTechnicalExpertComboBoxText, BasePage.ERROR_MESSAGE_TECHNICAL_EXPERT).toBeEnabled();
-      await expect(this.locatorTechnicalExpertComboBoxText, errorMessage).toHaveText(placeholder, {
-        timeout: Settings.DEFAULT_TIMEOUT,
-      });
-    }
+    await allure.step(`Проверить выпадающий список 'Технический эксперт'.`, async () => {
+      if (placeholder == UITextElements.ABSENT) {
+        await expect(
+          this.locatorTechnicalExpertComboBox.locator(BasePage.COMPONENT_COMBO_BOX_INPUT),
+          errorMessageNotDisplayed,
+        ).toBeVisible({ timeout: Settings.DEFAULT_TIMEOUT });
+        await expect(
+          this.locatorTechnicalExpertComboBox.locator(BasePage.COMPONENT_COMBO_BOX_INPUT),
+          BasePage.ERROR_MESSAGE_TECHNICAL_EXPERT,
+        ).toBeEnabled();
+        await expect(
+          this.locatorTechnicalExpertComboBox.locator(BasePage.COMPONENT_COMBO_BOX_INPUT),
+          errorMessage,
+        ).toHaveAttribute(BasePage.PLACEHOLDER, placeholder, { timeout: Settings.DEFAULT_TIMEOUT });
+      } else {
+        await expect(this.locatorTechnicalExpertComboBoxText, errorMessageNotDisplayed).toBeVisible({
+          timeout: Settings.DEFAULT_TIMEOUT,
+        });
+        await expect(this.locatorTechnicalExpertComboBoxText, BasePage.ERROR_MESSAGE_TECHNICAL_EXPERT).toBeEnabled();
+        await expect(this.locatorTechnicalExpertComboBoxText, errorMessage).toHaveText(placeholder, {
+          timeout: Settings.DEFAULT_TIMEOUT,
+        });
+      }
+    });
   }
 
   /** Кликнуть на выпадающий список 'Технический эксперт'. */
   public async clickOnTechnicalExpertComboBox(): Promise<void> {
-    await expect(this.locatorTechnicalExpertComboBox, BasePage.ERROR_MESSAGE_TECHNICAL_EXPERT).toBeEnabled();
-    await this.locatorTechnicalExpertComboBox.click();
+    await allure.step(`Кликнуть на выпадающий список 'Технический эксперт'.`, async () => {
+      await expect(this.locatorTechnicalExpertComboBox, BasePage.ERROR_MESSAGE_TECHNICAL_EXPERT).toBeEnabled();
+      await this.locatorTechnicalExpertComboBox.click();
+    });
   }
 
   /** Ввести текст в выпадающий список 'Технический эксперт'.
@@ -734,13 +738,15 @@ placeholder '${placeholder}'.`;
    * @param fullName ФИО технического эксперта компонента.
    */
   public async fillInTechnicalExpertComboBox(fullName: string): Promise<void> {
-    await this.locatorTechnicalExpertComboBox.pressSequentially(fullName);
-    await this.waitForPageReady();
-    await this.locatorSearchResultsFullName.click();
-    await expect(this.locatorSearchResultsFullName, BasePage.ERROR_MESSAGE).not.toBeVisible({
-      timeout: Settings.DEFAULT_TIMEOUT,
+    await allure.step(`Ввести текст в выпадающий список 'Технический эксперт'.`, async () => {
+      await this.locatorTechnicalExpertComboBox.pressSequentially(fullName);
+      await this.waitForPageReady();
+      await this.locatorSearchResultsFullName.click();
+      await expect(this.locatorSearchResultsFullName, BasePage.ERROR_MESSAGE).not.toBeVisible({
+        timeout: Settings.DEFAULT_TIMEOUT,
+      });
+      await this.page.waitForTimeout(2_000);
     });
-    await this.page.waitForTimeout(2_000);
   }
 
   /** Проверить количество выпадающих списков.
@@ -749,11 +755,14 @@ placeholder '${placeholder}'.`;
    * @param count Ожидаемое количество выпадающих списков.
    */
   public async checkComboBoxesCount(placeholder: string, count: number): Promise<void> {
-    await expect(
-      this.page.locator(BasePage.COMPONENT_COMBO_BOX).filter({ hasText: placeholder }),
-      `Выпадающий список с placeholder'ом '${placeholder}' не отображается на странице или количество
- таких выпадающих списков не соответствует ожидаемому (ожидаемое количество: ${count})`,
-    ).toHaveCount(count);
+    await allure.step(`Проверить количество выпадающих списков ('${count}') с 
+placeholder'ом '${placeholder}'.`, async () => {
+      await expect(
+        this.page.locator(BasePage.COMPONENT_COMBO_BOX).filter({ hasText: placeholder }),
+        `Выпадающий список с placeholder'ом '${placeholder}' не отображается на странице или количество 
+таких выпадающих списков не соответствует ожидаемому (ожидаемое количество: ${count})`,
+      ).toHaveCount(count);
+    });
   }
 
   /** Кликнуть на ссылку.
@@ -774,11 +783,13 @@ placeholder '${placeholder}'.`;
 
   /** Кликнуть на ссылку 'Продукты'. */
   public async clickOnLinkProducts(): Promise<void> {
-    const locatorLink: Locator = this.page.locator(BasePage.LINK_PRODUCTS);
+    await allure.step(`Кликнуть на ссылку 'Продукты'.`, async () => {
+      const locatorLink: Locator = this.page.locator(BasePage.LINK_PRODUCTS);
 
-    await expect(locatorLink, "Ссылка 'Продукты' не отображается").toBeVisible({ timeout: Settings.DEFAULT_TIMEOUT });
-    await expect(locatorLink, "Ссылка 'Продукты' недоступна").toBeEnabled();
-    await locatorLink.click();
+      await expect(locatorLink, "Ссылка 'Продукты' не отображается").toBeVisible({ timeout: Settings.DEFAULT_TIMEOUT });
+      await expect(locatorLink, "Ссылка 'Продукты' недоступна").toBeEnabled();
+      await locatorLink.click();
+    });
   }
 
   /** Проверить ссылку-заголовок страницы.
@@ -787,11 +798,13 @@ placeholder '${placeholder}'.`;
    * @param nth Порядковый номер ссылки.
    */
   public async checkItemTitleLink(title: string, nth: number = 0): Promise<void> {
-    await expect(
-      this.page.locator(BasePage.ITEM_TITLE_LINK).nth(nth),
-      `Ссылка-заголовок не отображается или не содержит ожидаемый текст '${title}'`,
-    ).toHaveText(title, {
-      timeout: Settings.DEFAULT_TIMEOUT,
+    await allure.step(`Проверить ссылку-заголовок страницы.`, async () => {
+      await expect(
+        this.page.locator(BasePage.ITEM_TITLE_LINK).nth(nth),
+        `Ссылка-заголовок не отображается или не содержит ожидаемый текст '${title}'`,
+      ).toHaveText(title, {
+        timeout: Settings.DEFAULT_TIMEOUT,
+      });
     });
   }
 
@@ -800,10 +813,12 @@ placeholder '${placeholder}'.`;
    * @param titleText Текст заголовка.
    */
   public async checkPageTitle(titleText: string): Promise<void> {
-    await expect(
-      this.page.locator(BasePage.TITLE),
-      `Текст заголовка страницы '${titleText}' не отображается или отображается другое название`,
-    ).toHaveText(titleText, { timeout: Settings.DEFAULT_TIMEOUT });
+    await allure.step(`Проверить заголовок страницы.`, async () => {
+      await expect(
+        this.page.locator(BasePage.TITLE),
+        `Текст заголовка страницы '${titleText}' не отображается или отображается другое название`,
+      ).toHaveText(titleText, { timeout: Settings.DEFAULT_TIMEOUT });
+    });
   }
 
   /** Проверить название активной вкладки.
@@ -811,10 +826,12 @@ placeholder '${placeholder}'.`;
    * @param tabName Название вкладки.
    */
   public async checkActiveTab(tabName: string): Promise<void> {
-    await expect(
-      this.page.locator(BasePage.ACTIVE_TAB),
-      `Активная вкладка '${tabName}' не отображается или отображается другое название`,
-    ).toHaveText(tabName);
+    await allure.step(`Проверить название активной вкладки.`, async () => {
+      await expect(
+        this.page.locator(BasePage.ACTIVE_TAB),
+        `Активная вкладка '${tabName}' не отображается или отображается другое название`,
+      ).toHaveText(tabName);
+    });
   }
 
   /** Проверить индикатор/индикаторы избранного.
@@ -822,10 +839,12 @@ placeholder '${placeholder}'.`;
    * @param count Количество индикаторов.
    */
   public async checkFavoritesIndicator(count: number = 1): Promise<void> {
-    await expect(
-      this.locatorFavoritesIndicator,
-      `Индикатор избранного не отображается или количество не соответствует ожидаемому '${count}'`,
-    ).toHaveCount(count, { timeout: Settings.DEFAULT_TIMEOUT });
+    await allure.step(`Проверить индикатор/индикаторы избранного.`, async () => {
+      await expect(
+        this.locatorFavoritesIndicator,
+        `Индикатор избранного не отображается или количество не соответствует ожидаемому '${count}'`,
+      ).toHaveCount(count, { timeout: Settings.DEFAULT_TIMEOUT });
+    });
   }
 
   /** Проверить индикатор/индикаторы избранного (включенные).
@@ -833,19 +852,23 @@ placeholder '${placeholder}'.`;
    * @param count Количество индикаторов.
    */
   public async checkCountFavoritesIndicatorOn(count: number = 1): Promise<void> {
-    await expect(
-      this.page.locator(BasePage.FAVORITES_INDICATOR_ON),
-      `Включенный индикатор избранного не отображается или количество не соответствует ожидаемому '${count}'`,
-    ).toHaveCount(count, { timeout: Settings.DEFAULT_TIMEOUT });
+    await allure.step(`Проверить индикатор/индикаторы избранного (включенные).`, async () => {
+      await expect(
+        this.page.locator(BasePage.FAVORITES_INDICATOR_ON),
+        `Включенный индикатор избранного не отображается или количество не соответствует ожидаемому '${count}'`,
+      ).toHaveCount(count, { timeout: Settings.DEFAULT_TIMEOUT });
+    });
   }
 
   /** Проверить видимость продукта 'Coordinator IG 4'. */
   public async checkVisibilityCoordinatorIg4(): Promise<void> {
-    await expect(
-      this.page.getByText(Products.COORDINATOR_IG_4),
-      `Продукт '${Products.COORDINATOR_IG_4}' должен был исчезнуть за 30 секунд`,
-    ).not.toBeVisible({
-      timeout: Settings.DEFAULT_TIMEOUT,
+    await allure.step(`Проверить видимость продукта 'Coordinator IG 4'.`, async () => {
+      await expect(
+        this.page.getByText(Products.COORDINATOR_IG_4),
+        `Продукт '${Products.COORDINATOR_IG_4}' должен был исчезнуть за 30 секунд`,
+      ).not.toBeVisible({
+        timeout: Settings.DEFAULT_TIMEOUT,
+      });
     });
   }
 
@@ -854,10 +877,12 @@ placeholder '${placeholder}'.`;
    * @return Количество индикаторов избранного.
    */
   public async getCountFavoritesIndicator(): Promise<number> {
-    await this.checkVisibilityCoordinatorIg4();
-    await this.page.waitForTimeout(1_500);
-    await expect(this.locatorFavoritesIndicator.first(), "Ни один индикатор избранного не отображается").toBeVisible({
-      timeout: Settings.DEFAULT_TIMEOUT,
+    await allure.step(`Получить количество индикаторов избранного.`, async () => {
+      await this.checkVisibilityCoordinatorIg4();
+      await this.page.waitForTimeout(1_500);
+      await expect(this.locatorFavoritesIndicator.first(), "Ни один индикатор избранного не отображается").toBeVisible({
+        timeout: Settings.DEFAULT_TIMEOUT,
+      });
     });
 
     return this.locatorFavoritesIndicator.count();
@@ -868,27 +893,33 @@ placeholder '${placeholder}'.`;
    * @param itemTitleText Название элемента панели навигации.
    */
   public async checkNavigationBarItemTitle(itemTitleText: string): Promise<void> {
-    await expect(
-      this.page.locator(BasePage.NAVIGATION_BAR_ITEM_TITLE),
-      `Название элемента панели навигации не отображается или не соответствует ожидаемому значению
- '${itemTitleText}'`,
-    ).toHaveText(itemTitleText);
+    await allure.step(`Проверить название элемента панели навигации.`, async () => {
+      await expect(
+        this.page.locator(BasePage.NAVIGATION_BAR_ITEM_TITLE),
+        `Название элемента панели навигации не отображается или не соответствует ожидаемому значению 
+'${itemTitleText}'`,
+      ).toHaveText(itemTitleText);
+    });
   }
 
   /** Проверить видимость иконки в виде воронки. */
   public async checkVisibilityFunnelIcon(): Promise<void> {
-    await expect(this.locatorFunnelIcon, "Иконка в виде воронки не отображается").toBeVisible({
-      timeout: Settings.DEFAULT_TIMEOUT,
+    await allure.step(`Проверить видимость иконки в виде воронки.`, async () => {
+      await expect(this.locatorFunnelIcon, "Иконка в виде воронки не отображается").toBeVisible({
+        timeout: Settings.DEFAULT_TIMEOUT,
+      });
     });
   }
 
   /** Кликнуть на иконку в виде воронки. */
   public async clickOnFunnelIcon(): Promise<void> {
-    await this.checkVisibilityFunnelIcon();
-    await expect(this.locatorFunnelIcon, "Иконка в виде воронки недоступна").toBeEnabled({
-      timeout: Settings.DEFAULT_TIMEOUT,
+    await allure.step(`Кликнуть на иконку в виде воронки.`, async () => {
+      await this.checkVisibilityFunnelIcon();
+      await expect(this.locatorFunnelIcon, "Иконка в виде воронки недоступна").toBeEnabled({
+        timeout: Settings.DEFAULT_TIMEOUT,
+      });
+      await this.locatorFunnelIcon.click();
     });
-    await this.locatorFunnelIcon.click();
   }
 
   /** Проверить кнопку 'Сбросить фильтры'.
@@ -896,27 +927,31 @@ placeholder '${placeholder}'.`;
    * @param visibleAndEnabled Видимость и доступность кнопки (если 'False', то должна быть невидимой).
    */
   public async checkResetFiltersButton(visibleAndEnabled: boolean = true): Promise<void> {
-    if (visibleAndEnabled) {
-      await expect(
-        this.locatorResetFiltersButton,
-        `Кнопка '${BasePage.RESET_FILTERS_BUTTON}' не отображается`,
-      ).toBeVisible();
-      await expect(
-        this.locatorResetFiltersButton,
-        `Кнопка '${BasePage.RESET_FILTERS_BUTTON}' недоступна`,
-      ).toBeEnabled();
-    } else {
-      await expect(
-        this.locatorResetFiltersButton,
-        `Кнопка '${BasePage.RESET_FILTERS_BUTTON}' не должна отображаться`,
-      ).not.toBeVisible();
-    }
+    await allure.step(`Проверить кнопку 'Сбросить фильтры'.`, async () => {
+      if (visibleAndEnabled) {
+        await expect(
+          this.locatorResetFiltersButton,
+          `Кнопка '${BasePage.RESET_FILTERS_BUTTON}' не отображается`,
+        ).toBeVisible();
+        await expect(
+          this.locatorResetFiltersButton,
+          `Кнопка '${BasePage.RESET_FILTERS_BUTTON}' недоступна`,
+        ).toBeEnabled();
+      } else {
+        await expect(
+          this.locatorResetFiltersButton,
+          `Кнопка '${BasePage.RESET_FILTERS_BUTTON}' не должна отображаться`,
+        ).not.toBeVisible();
+      }
+    });
   }
 
   /** Кликнуть на кнопку 'Сбросить фильтры'. */
   public async clickOnResetFiltersButton(): Promise<void> {
-    await this.checkResetFiltersButton();
-    await this.locatorResetFiltersButton.click();
+    await allure.step(`Кликнуть на кнопку 'Сбросить фильтры'.`, async () => {
+      await this.checkResetFiltersButton();
+      await this.locatorResetFiltersButton.click();
+    });
   }
 
   /** Проверить выпадающий список в фильтре.
@@ -925,27 +960,30 @@ placeholder '${placeholder}'.`;
    * @param visible Видимость выпадающего списка в фильтре (если 'False', то список должен отсутствовать).
    */
   public async checkComboBoxInFilter(placeholder: string, visible: boolean = true): Promise<void> {
-    const locatorFirst: Locator = this.page
-      .locator(BasePage.COMBO_BOX_WITH_TEXT_OR_PLACEHOLDER_IN_FILTER)
-      .filter({ hasText: placeholder });
-    const locatorSecond: Locator = this.page.getByPlaceholder(placeholder);
-    const errorMessage: string = visible
-      ? `Выпадающий список с placeholder'ом '${placeholder}' не отображается`
-      : `Выпадающий список с placeholder'ом '${placeholder}' не должен отображаться`;
+    await allure.step(`Проверить выпадающий список в фильтре с 
+placeholder'ом '${placeholder}'.`, async () => {
+      const locatorFirst: Locator = this.page
+        .locator(BasePage.COMBO_BOX_WITH_TEXT_OR_PLACEHOLDER_IN_FILTER)
+        .filter({ hasText: placeholder });
+      const locatorSecond: Locator = this.page.getByPlaceholder(placeholder);
+      const errorMessage: string = visible
+        ? `Выпадающий список с placeholder'ом '${placeholder}' не отображается`
+        : `Выпадающий список с placeholder'ом '${placeholder}' не должен отображаться`;
 
-    if (visible) {
-      try {
-        await expect(locatorFirst, errorMessage).toBeVisible();
-      } catch {
-        await expect(locatorSecond, errorMessage).toBeVisible();
+      if (visible) {
+        try {
+          await expect(locatorFirst, errorMessage).toBeVisible();
+        } catch {
+          await expect(locatorSecond, errorMessage).toBeVisible();
+        }
+      } else {
+        try {
+          await expect(locatorFirst, errorMessage).not.toBeVisible();
+        } catch {
+          await expect(locatorSecond, errorMessage).not.toBeVisible();
+        }
       }
-    } else {
-      try {
-        await expect(locatorFirst, errorMessage).not.toBeVisible();
-      } catch {
-        await expect(locatorSecond, errorMessage).not.toBeVisible();
-      }
-    }
+    });
   }
 
   /** Проверить элементы и текст в выпадающем списке фильтра.
@@ -954,29 +992,31 @@ placeholder '${placeholder}'.`;
    * @param listComboBoxElements Список элементов combobox'а.
    */
   public async checkComboBoxListAndTextInFilter(textInComboBox: string, listComboBoxElements: string[]): Promise<void> {
-    const locatorComboBoxWithText: Locator = this.page
-      .locator(BasePage.COMBO_BOX_WITH_TEXT_OR_PLACEHOLDER_IN_FILTER)
-      .filter({ hasText: textInComboBox });
+    await allure.step(`Проверить элементы и текст в выпадающем списке фильтра.`, async () => {
+      const locatorComboBoxWithText: Locator = this.page
+        .locator(BasePage.COMBO_BOX_WITH_TEXT_OR_PLACEHOLDER_IN_FILTER)
+        .filter({ hasText: textInComboBox });
 
-    await expect(
-      locatorComboBoxWithText,
-      `Выпадающий список с текстом '${textInComboBox}' не отображается`,
-    ).toBeVisible();
-
-    let element: string;
-
-    for (let i: number = 0; i < listComboBoxElements.length; i++) {
-      element = listComboBoxElements[i];
       await expect(
-        this.page
-          .locator(BasePage.COMBO_BOX_IN_FILTER)
-          .filter({ has: locatorComboBoxWithText })
-          .locator(BasePage.ELEMENT_COMBO_BOX_IN_FILTER)
-          .nth(i),
-        `Элемент combobox'а в строке номер ${i + 1} не отображается или значение не соответствует 
+        locatorComboBoxWithText,
+        `Выпадающий список с текстом '${textInComboBox}' не отображается`,
+      ).toBeVisible();
+
+      let element: string;
+
+      for (let i: number = 0; i < listComboBoxElements.length; i++) {
+        element = listComboBoxElements[i];
+        await expect(
+          this.page
+            .locator(BasePage.COMBO_BOX_IN_FILTER)
+            .filter({ has: locatorComboBoxWithText })
+            .locator(BasePage.ELEMENT_COMBO_BOX_IN_FILTER)
+            .nth(i),
+          `Элемент combobox'а в строке номер ${i + 1} не отображается или значение не соответствует 
 ожидаемому '${element}'`,
-      ).toHaveText(element);
-    }
+        ).toHaveText(element);
+      }
+    });
   }
 
   /** Кликнуть на выпадающий список в фильтре.
