@@ -1025,15 +1025,19 @@ placeholder'ом '${placeholder}'.`, async () => {
    */
   public async clickOnComboBoxInFilter(placeholder: string): Promise<void> {
     const errorMessage: string = `Выпадающий список с placeholder'ом '${placeholder}' недоступен`;
-    let locatorComboBoxWithFilter: Locator = this.locatorComboBox.filter({ hasText: placeholder });
 
-    try {
-      await expect(locatorComboBoxWithFilter, errorMessage).toBeEnabled();
-    } catch {
-      locatorComboBoxWithFilter = this.page.getByPlaceholder(placeholder);
-      await expect(locatorComboBoxWithFilter, errorMessage).toBeEnabled();
-    }
-    await locatorComboBoxWithFilter.click();
+    await allure.step(`Кликнуть на выпадающий список в фильтре с 
+placeholder'ом '${placeholder}'.`, async () => {
+      let locatorComboBoxWithFilter: Locator = this.locatorComboBox.filter({ hasText: placeholder });
+
+      try {
+        await expect(locatorComboBoxWithFilter, errorMessage).toBeEnabled();
+      } catch {
+        locatorComboBoxWithFilter = this.page.getByPlaceholder(placeholder);
+        await expect(locatorComboBoxWithFilter, errorMessage).toBeEnabled();
+      }
+      await locatorComboBoxWithFilter.click();
+    });
   }
 
   /** Ввести текст в выпадающий список в фильтре.
@@ -1042,9 +1046,11 @@ placeholder'ом '${placeholder}'.`, async () => {
    * @param text Текст вводимый в combobox.
    */
   async fillInComboBoxInFilter(placeholder: string, text: string): Promise<void> {
-    const locatorComboBoxWithFilter: Locator = this.locatorComboBox.filter({ hasText: placeholder });
+    await allure.step(`Ввести текст в выпадающий список в фильтре.`, async () => {
+      const locatorComboBoxWithFilter: Locator = this.locatorComboBox.filter({ hasText: placeholder });
 
-    await locatorComboBoxWithFilter.pressSequentially(text);
+      await locatorComboBoxWithFilter.pressSequentially(text);
+    });
   }
 
   /** Кликнуть на элемент выпадающего списка в фильтре.
@@ -1053,29 +1059,33 @@ placeholder'ом '${placeholder}'.`, async () => {
    * @param nth Порядковый номер элемента.
    */
   public async clickOnElementInComboBoxInFilter(elementName: string, nth: number = 0): Promise<void> {
-    const locatorElement: Locator = this.page
-      .locator(BasePage.ELEMENT_COMBO_BOX_IN_FILTER)
-      .getByText(elementName, { exact: true })
-      .nth(nth);
+    await allure.step(`Кликнуть на элемент выпадающего списка в фильтре.`, async () => {
+      const locatorElement: Locator = this.page
+        .locator(BasePage.ELEMENT_COMBO_BOX_IN_FILTER)
+        .getByText(elementName, { exact: true })
+        .nth(nth);
 
-    await expect(locatorElement, `В выпадающем списке элемент '${elementName}' не отображается`).toBeVisible();
-    await expect(locatorElement, `В выпадающем списке элемент '${elementName}' недоступен`).toBeEnabled();
-    await locatorElement.click();
+      await expect(locatorElement, `В выпадающем списке элемент '${elementName}' не отображается`).toBeVisible();
+      await expect(locatorElement, `В выпадающем списке элемент '${elementName}' недоступен`).toBeEnabled();
+      await locatorElement.click();
+    });
   }
 
   /** Кликнуть на иконку в виде крестика (закрывает блок фильтра). */
   public async clickOnCloseFilterBlockIcon(): Promise<void> {
-    const locatorCloseFilterBlockIcon: Locator = this.page.locator(BasePage.CLOSE_FILTER_BLOCK_ICON);
+    await allure.step(`Кликнуть на иконку в виде крестика (закрывает блок фильтра).`, async () => {
+      const locatorCloseFilterBlockIcon: Locator = this.page.locator(BasePage.CLOSE_FILTER_BLOCK_ICON);
 
-    await expect(
-      locatorCloseFilterBlockIcon,
-      "Иконка в виде крестика, которая закрывает блок фильтра, не отображается",
-    ).toBeVisible();
-    await expect(
-      locatorCloseFilterBlockIcon,
-      "Иконка в виде крестика, которая закрывает блок фильтра, недоступна",
-    ).toBeEnabled();
-    await locatorCloseFilterBlockIcon.click();
+      await expect(
+        locatorCloseFilterBlockIcon,
+        "Иконка в виде крестика, которая закрывает блок фильтра, не отображается",
+      ).toBeVisible();
+      await expect(
+        locatorCloseFilterBlockIcon,
+        "Иконка в виде крестика, которая закрывает блок фильтра, недоступна",
+      ).toBeEnabled();
+      await locatorCloseFilterBlockIcon.click();
+    });
   }
 
   /** Проверить заголовки таблицы.
@@ -1101,20 +1111,24 @@ placeholder'ом '${placeholder}'.`, async () => {
   public async checkTableTextValues(values: (string | RegExp)[], firstString: boolean = true): Promise<void> {
     let locator: Locator;
 
-    for (let i: number = 0; i < values.length; i++) {
-      locator = firstString ? this.locatorTableFirstRowAndColumn.nth(i) : this.locatorTableLastRowAndColumn.nth(i);
+    await allure.step(`Проверить текстовые значения таблицы в первой или в последней строке.`, async () => {
+      for (let i: number = 0; i < values.length; i++) {
+        locator = firstString ? this.locatorTableFirstRowAndColumn.nth(i) : this.locatorTableLastRowAndColumn.nth(i);
 
-      await expect(
-        locator,
-        `Значение в первой строке в столбце номер ${i + 1} не отображается или значение не 
+        await expect(
+          locator,
+          `Значение в первой строке в столбце номер ${i + 1} не отображается или значение не 
 соответствует ожидаемому '${values[i]}'`,
-      ).toContainText(values[i], { timeout: Settings.DEFAULT_TIMEOUT });
-    }
+        ).toContainText(values[i], { timeout: Settings.DEFAULT_TIMEOUT });
+      }
+    });
   }
 
   /** Проверить видимость input'а поиска. */
   public async checkVisibilitySearchInput(): Promise<void> {
-    await expect(this.locatorSearchInput, "Поле поиска не отображается").toBeVisible();
+    await allure.step(`Проверить видимость input'а поиска.`, async () => {
+      await expect(this.locatorSearchInput, "Поле поиска не отображается").toBeVisible();
+    });
   }
 
   /** Ввести в input поиска текст.
@@ -1147,15 +1161,17 @@ placeholder'ом '${placeholder}'.`, async () => {
   ): Promise<void> {
     let locatorLink: Locator;
 
-    if (inTable) {
-      locatorLink = this.locatorTableRowAndColumn.getByRole(Roles.LINK, { name: linkText, exact: exact }).nth(nth);
-    } else {
-      locatorLink = this.page.getByRole(Roles.LINK, { name: linkText, exact: exact }).nth(nth);
-    }
-    await expect(
-      locatorLink,
-      `Ссылка с текстом '${linkText}' не отображается или атрибут href не соответствует ожидаемому '${href}'`,
-    ).toHaveAttribute("href", href, { timeout: Settings.DEFAULT_TIMEOUT });
+    await allure.step(`Проверить атрибут 'href' у ссылки.`, async () => {
+      if (inTable) {
+        locatorLink = this.locatorTableRowAndColumn.getByRole(Roles.LINK, { name: linkText, exact: exact }).nth(nth);
+      } else {
+        locatorLink = this.page.getByRole(Roles.LINK, { name: linkText, exact: exact }).nth(nth);
+      }
+      await expect(
+        locatorLink,
+        `Ссылка с текстом '${linkText}' не отображается или атрибут href не соответствует ожидаемому '${href}'`,
+      ).toHaveAttribute("href", href, { timeout: Settings.DEFAULT_TIMEOUT });
+    });
   }
 
   /** Проверить, что ссылка открывается в новой вкладке.
@@ -1166,10 +1182,12 @@ placeholder'ом '${placeholder}'.`, async () => {
   public async checkTargetBlank(linkText: string, nth: number = 0): Promise<void> {
     const locatorLink: Locator = this.page.getByRole(Roles.LINK, { name: linkText }).nth(nth);
 
-    await expect(
-      locatorLink,
-      `Ссылка с текстом '${linkText}' не отображается или она не открывается в новой вкладке`,
-    ).toHaveAttribute("target", "_blank");
+    await allure.step(`Проверить, что ссылка открывается в новой вкладке.`, async () => {
+      await expect(
+        locatorLink,
+        `Ссылка с текстом '${linkText}' не отображается или она не открывается в новой вкладке`,
+      ).toHaveAttribute("target", "_blank");
+    });
   }
 
   /** Проверить видимость иконки в виде крестика.
@@ -1177,51 +1195,61 @@ placeholder'ом '${placeholder}'.`, async () => {
    * @param visible Видимость иконки (если 'False', то иконка должна отсутствовать на странице).
    */
   public async checkCrossIcon(visible: boolean = true): Promise<void> {
-    if (visible) {
-      await expect(this.locatorCrossIcon, "Иконка в виде крестика не отображается.").toBeVisible();
-    } else {
-      await expect(this.locatorCrossIcon, "Иконка в виде крестика не должна отображаться.").not.toBeVisible();
-    }
+    await allure.step(`Проверить видимость иконки в виде крестика.`, async () => {
+      if (visible) {
+        await expect(this.locatorCrossIcon, "Иконка в виде крестика не отображается.").toBeVisible();
+      } else {
+        await expect(this.locatorCrossIcon, "Иконка в виде крестика не должна отображаться.").not.toBeVisible();
+      }
+    });
   }
 
   /** Кликнуть на иконку в виде крестика. */
   public async clickOnCrossIcon(): Promise<void> {
-    await this.checkCrossIcon();
-    await expect(this.locatorCrossIcon, "Иконка в виде крестика недоступна").toBeEnabled();
-    await this.locatorCrossIcon.click();
+    await allure.step(`Кликнуть на иконку в виде крестика.`, async () => {
+      await this.checkCrossIcon();
+      await expect(this.locatorCrossIcon, "Иконка в виде крестика недоступна").toBeEnabled();
+      await this.locatorCrossIcon.click();
+    });
   }
 
   /** Кликнуть на все иконки в виде крестика. */
   public async clickOnAllCrossIcons(): Promise<void> {
-    await expect(this.locatorCrossIcon.first(), "Первая иконка в виде крестика не отображается.").toBeVisible({
-      timeout: Settings.DEFAULT_TIMEOUT,
-    });
+    await allure.step(`Кликнуть на все иконки в виде крестика.`, async () => {
+      await expect(this.locatorCrossIcon.first(), "Первая иконка в виде крестика не отображается.").toBeVisible({
+        timeout: Settings.DEFAULT_TIMEOUT,
+      });
 
-    while ((await this.locatorCrossIcon.count()) > 0) {
-      await expect(this.locatorCrossIcon.first(), "Первая иконка в виде крестика недоступна").toBeEnabled();
-      await this.locatorCrossIcon.first().click();
-      await this.page.waitForTimeout(500);
-    }
+      while ((await this.locatorCrossIcon.count()) > 0) {
+        await expect(this.locatorCrossIcon.first(), "Первая иконка в виде крестика недоступна").toBeEnabled();
+        await this.locatorCrossIcon.first().click();
+        await this.page.waitForTimeout(500);
+      }
+    });
   }
 
   /** Проверить видимость иконки для закрытия сообщения в правом нижнем углу. */
   public async checkVisibilityCloseMessageIcon(): Promise<void> {
-    await expect(
-      this.locatorCloseMessageIcon,
-      "Иконка закрытия всплывающего сообщения в правом нижнем углу не отображается.",
-    ).toBeVisible({
-      timeout: Settings.DEFAULT_TIMEOUT,
+    await allure.step(`Проверить видимость иконки для закрытия сообщения в правом нижнем углу.`, async () => {
+      await expect(
+        this.locatorCloseMessageIcon,
+        "Иконка закрытия всплывающего сообщения в правом нижнем углу не отображается.",
+      ).toBeVisible({
+        timeout: Settings.DEFAULT_TIMEOUT,
+      });
     });
   }
 
   /** Закрыть сообщение в правом нижнем углу. */
   public async clickOnCloseMessageIcon(): Promise<void> {
-    await this.checkVisibilityCloseMessageIcon();
-    await expect(
-      this.locatorCloseMessageIcon,
-      "Иконка закрытия всплывающего сообщения в правом нижнем углу недоступна",
-    ).toBeEnabled();
-    await this.locatorCloseMessageIcon.click();
+    await allure.step(`Закрыть сообщение в правом нижнем углу.`, async () => {
+      await this.checkVisibilityCloseMessageIcon();
+      await expect(
+        this.locatorCloseMessageIcon,
+        "Иконка закрытия всплывающего сообщения в правом нижнем углу недоступна",
+      ).toBeEnabled();
+      await this.locatorCloseMessageIcon.click();
+    });
   }
 
   /** Проверить input поиска.
@@ -1229,7 +1257,9 @@ placeholder'ом '${placeholder}'.`, async () => {
    * @param inputText Текст, который должен присутствовать в поле поиска.
    */
   public async checkSearchInput(inputText: string): Promise<void> {
-    await expect(this.locatorSearchInput, `Поле поиска не содержит текст '${inputText}'`).toHaveValue(inputText);
+    await allure.step(`Проверить input поиска.`, async () => {
+      await expect(this.locatorSearchInput, `Поле поиска не содержит текст '${inputText}'`).toHaveValue(inputText);
+    });
   }
 
   /** Проверить что текст имеет жёлтую подсветку.
@@ -1237,10 +1267,12 @@ placeholder'ом '${placeholder}'.`, async () => {
    * @param yellowText Текст, который должен быть подсвечен жёлтым цветом.
    */
   public async checkYellowBacklight(yellowText: string): Promise<void> {
-    await expect(
-      this.page.locator(BasePage.YELLOW_BACKLIGHT),
-      `Текст '${yellowText}' не подсвечен жёлтым.`,
-    ).toContainText(yellowText);
+    await allure.step(`Проверить что текст имеет жёлтую подсветку.`, async () => {
+      await expect(
+        this.page.locator(BasePage.YELLOW_BACKLIGHT),
+        `Текст '${yellowText}' не подсвечен жёлтым.`,
+      ).toContainText(yellowText);
+    });
   }
 
   /** Ввести значение в input поиска.
@@ -1248,13 +1280,15 @@ placeholder'ом '${placeholder}'.`, async () => {
    * @param textWithExpander Текст рядом с которым находится экспандер.
    */
   public async clickOnExpander(textWithExpander: string): Promise<void> {
-    const locatorExpander: Locator = this.locatorTableRowAndColumn
-      .filter({ hasText: textWithExpander })
-      .locator(BasePage.EXPANDER);
+    await allure.step(`Ввести значение в input поиска.`, async () => {
+      const locatorExpander: Locator = this.locatorTableRowAndColumn
+        .filter({ hasText: textWithExpander })
+        .locator(BasePage.EXPANDER);
 
-    await expect(locatorExpander, `Экспандер рядом с текстом '${textWithExpander}' не отображается`).toBeVisible();
-    await expect(locatorExpander, `Экспандер рядом с текстом '${textWithExpander}' недоступен`).toBeEnabled();
-    await locatorExpander.click();
+      await expect(locatorExpander, `Экспандер рядом с текстом '${textWithExpander}' не отображается`).toBeVisible();
+      await expect(locatorExpander, `Экспандер рядом с текстом '${textWithExpander}' недоступен`).toBeEnabled();
+      await locatorExpander.click();
+    });
   }
 
   /** Кликнуть на иконку избранного (включенную).
@@ -1262,21 +1296,23 @@ placeholder'ом '${placeholder}'.`, async () => {
    * @param textFavoritesIcon Текст рядом с иконкой избранного.
    */
   public async clickOnFavoritesIconOn(textFavoritesIcon: string): Promise<void> {
-    const locatorFavoritesIconOn: Locator = this.locatorTableRow
-      .filter({ hasText: textFavoritesIcon })
-      .locator(BasePage.FAVORITES_INDICATOR_ON);
+    await allure.step(`Кликнуть на иконку избранного (включенную).`, async () => {
+      const locatorFavoritesIconOn: Locator = this.locatorTableRow
+        .filter({ hasText: textFavoritesIcon })
+        .locator(BasePage.FAVORITES_INDICATOR_ON);
 
-    await expect(
-      locatorFavoritesIconOn,
-      `Иконка избранного рядом с текстом '${textFavoritesIcon}' не отображается`,
-    ).toBeVisible({
-      timeout: Settings.DEFAULT_TIMEOUT,
+      await expect(
+        locatorFavoritesIconOn,
+        `Иконка избранного рядом с текстом '${textFavoritesIcon}' не отображается`,
+      ).toBeVisible({
+        timeout: Settings.DEFAULT_TIMEOUT,
+      });
+      await expect(
+        locatorFavoritesIconOn,
+        `Иконка избранного рядом с текстом '${textFavoritesIcon}' недоступна`,
+      ).toBeEnabled();
+      await locatorFavoritesIconOn.click();
     });
-    await expect(
-      locatorFavoritesIconOn,
-      `Иконка избранного рядом с текстом '${textFavoritesIcon}' недоступна`,
-    ).toBeEnabled();
-    await locatorFavoritesIconOn.click();
   }
 
   /** Кликнуть на иконку избранного (выключенную).
@@ -1284,61 +1320,72 @@ placeholder'ом '${placeholder}'.`, async () => {
    * @param textFavoritesIcon Текст рядом с иконкой избранного.
    */
   public async clickOnFavoritesIconOff(textFavoritesIcon: string): Promise<void> {
-    const locatorFavoritesIconOff: Locator = this.locatorTableRow
-      .filter({ hasText: textFavoritesIcon })
-      .locator(BasePage.FAVORITES_INDICATOR_OFF);
+    await allure.step(`Кликнуть на иконку избранного (выключенную).`, async () => {
+      const locatorFavoritesIconOff: Locator = this.locatorTableRow
+        .filter({ hasText: textFavoritesIcon })
+        .locator(BasePage.FAVORITES_INDICATOR_OFF);
 
-    await expect(
-      locatorFavoritesIconOff,
-      `Иконка избранного рядом с текстом '${textFavoritesIcon}' не отображается`,
-    ).toBeVisible({
-      timeout: Settings.DEFAULT_TIMEOUT,
+      await expect(
+        locatorFavoritesIconOff,
+        `Иконка избранного рядом с текстом '${textFavoritesIcon}' не отображается`,
+      ).toBeVisible({
+        timeout: Settings.DEFAULT_TIMEOUT,
+      });
+      await expect(
+        locatorFavoritesIconOff,
+        `Иконка избранного рядом с текстом '${textFavoritesIcon}' недоступна`,
+      ).toBeEnabled();
+      await locatorFavoritesIconOff.click();
     });
-    await expect(
-      locatorFavoritesIconOff,
-      `Иконка избранного рядом с текстом '${textFavoritesIcon}' недоступна`,
-    ).toBeEnabled();
-    await locatorFavoritesIconOff.click();
   }
 
   /** Проверить видимость иконки избранного (выключенную). */
   public async checkFavoritesIconOff(): Promise<void> {
-    await expect(
-      this.page.locator(BasePage.FAVORITES_INDICATOR_OFF),
-      "Выключенная иконка избранного не отображается",
-    ).toBeVisible({
-      timeout: Settings.DEFAULT_TIMEOUT,
+    await allure.step(`Проверить видимость иконки избранного (выключенную).`, async () => {
+      await expect(
+        this.page.locator(BasePage.FAVORITES_INDICATOR_OFF),
+        "Выключенная иконка избранного не отображается",
+      ).toBeVisible({
+        timeout: Settings.DEFAULT_TIMEOUT,
+      });
     });
   }
 
   /** Проверить видимость иконки избранного (включенную). */
   public async checkFavoritesIconOn(): Promise<void> {
-    await expect(
-      this.page.locator(BasePage.FAVORITES_INDICATOR_ON),
-      "Включенная иконка избранного не отображается",
-    ).toBeVisible({
-      timeout: Settings.DEFAULT_TIMEOUT,
+    await allure.step(`Проверить видимость иконки избранного (включенную).`, async () => {
+      await expect(
+        this.page.locator(BasePage.FAVORITES_INDICATOR_ON),
+        "Включенная иконка избранного не отображается",
+      ).toBeVisible({
+        timeout: Settings.DEFAULT_TIMEOUT,
+      });
     });
   }
 
   /** Кликнуть на иконку избранного (выключенную или включенную). */
   public async clickOnFavoritesIcon(): Promise<void> {
-    await expect(this.locatorFavoritesIndicator, "Иконка избранного не отображается").toBeVisible({
-      timeout: Settings.DEFAULT_TIMEOUT,
+    await allure.step(`Кликнуть на иконку избранного (выключенную или включенную).`, async () => {
+      await expect(this.locatorFavoritesIndicator, "Иконка избранного не отображается").toBeVisible({
+        timeout: Settings.DEFAULT_TIMEOUT,
+      });
+      await expect(this.locatorFavoritesIndicator, "Иконка избранного недоступна").toBeEnabled();
+      await this.locatorFavoritesIndicator.click();
     });
-    await expect(this.locatorFavoritesIndicator, "Иконка избранного недоступна").toBeEnabled();
-    await this.locatorFavoritesIndicator.click();
   }
 
   /** Кликнуть на все иконки избранного и иконки 'Закрыть сообщение' в правом нижнем углу. */
   public async clickOnAllFavoritesIconsAndAllCloseMessageIcons(): Promise<void> {
-    await this.page.waitForLoadState(LoadStates.NETWORK_IDLE);
-    const allCloseMessageIcons = this.page.getByTitle(BasePage.CLOSE_MESSAGE_ICON);
+    await allure.step(`Кликнуть на все иконки избранного и иконки 'Закрыть сообщение' в правом нижнем 
+углу.`, async () => {
+      await this.page.waitForLoadState(LoadStates.NETWORK_IDLE);
+      const allCloseMessageIcons = this.page.getByTitle(BasePage.CLOSE_MESSAGE_ICON);
 
-    while ((await this.locatorFavoritesIndicator.count()) > 0) {
-      await this.locatorFavoritesIndicator.first().click();
-      await allCloseMessageIcons.first().click();
-    }
+      while ((await this.locatorFavoritesIndicator.count()) > 0) {
+        await this.locatorFavoritesIndicator.first().click();
+        await allCloseMessageIcons.first().click();
+      }
+    });
   }
 
   /** Проверить, что экспандер в списке не отображается.
@@ -1346,16 +1393,18 @@ placeholder'ом '${placeholder}'.`, async () => {
    * @param listWithExpander Список рядом с которым проверяется отображение экспандеров.
    */
   public async checkInvisibleExpanders(listWithExpander: string[]): Promise<void> {
-    for (const textWithExpander of listWithExpander) {
-      const locatorExpander = this.locatorTableRowAndColumn
-        .filter({ hasText: textWithExpander })
-        .locator(BasePage.EXPANDER);
+    await allure.step(`Проверить, что экспандер в списке не отображается.`, async () => {
+      for (const textWithExpander of listWithExpander) {
+        const locatorExpander = this.locatorTableRowAndColumn
+          .filter({ hasText: textWithExpander })
+          .locator(BasePage.EXPANDER);
 
-      await expect(
-        locatorExpander,
-        `Экспандер рядом с текстом '${textWithExpander}' не должен отображаться`,
-      ).not.toBeVisible();
-    }
+        await expect(
+          locatorExpander,
+          `Экспандер рядом с текстом '${textWithExpander}' не должен отображаться`,
+        ).not.toBeVisible();
+      }
+    });
   }
 
   /** Проверить таблицу компонентов или продуктов.
