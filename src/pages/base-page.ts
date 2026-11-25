@@ -1379,7 +1379,7 @@ placeholder'ом '${placeholder}'.`, async () => {
     await allure.step(`Кликнуть на все иконки избранного и иконки 'Закрыть сообщение' в правом нижнем 
 углу.`, async () => {
       await this.page.waitForLoadState(LoadStates.NETWORK_IDLE);
-      const allCloseMessageIcons = this.page.getByTitle(BasePage.CLOSE_MESSAGE_ICON);
+      const allCloseMessageIcons: Locator = this.page.getByTitle(BasePage.CLOSE_MESSAGE_ICON);
 
       while ((await this.locatorFavoritesIndicator.count()) > 0) {
         await this.locatorFavoritesIndicator.first().click();
@@ -1395,7 +1395,7 @@ placeholder'ом '${placeholder}'.`, async () => {
   public async checkInvisibleExpanders(listWithExpander: string[]): Promise<void> {
     await allure.step(`Проверить, что экспандер в списке не отображается.`, async () => {
       for (const textWithExpander of listWithExpander) {
-        const locatorExpander = this.locatorTableRowAndColumn
+        const locatorExpander: Locator = this.locatorTableRowAndColumn
           .filter({ hasText: textWithExpander })
           .locator(BasePage.EXPANDER);
 
@@ -1423,7 +1423,6 @@ placeholder'ом '${placeholder}'.`, async () => {
         ).toHaveText(strings[i], { timeout: Settings.DEFAULT_TIMEOUT });
       }
     });
-
   }
 
   /** Кликнуть на элемент с определённым текстом.
