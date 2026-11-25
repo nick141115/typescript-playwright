@@ -1412,15 +1412,18 @@ placeholder'ом '${placeholder}'.`, async () => {
    * @param strings Список строк.
    */
   public async checkTableComponentsOrProducts(strings: string[]): Promise<void> {
-    await this.checkVisibilityCoordinatorIg4();
-    await this.page.waitForTimeout(2_000);
+    await allure.step(`Проверить таблицу компонентов или продуктов.`, async () => {
+      await this.checkVisibilityCoordinatorIg4();
+      await this.page.waitForTimeout(2_000);
 
-    for (let i: number = 0; i < strings.length; i++) {
-      await expect(
-        this.locatorTableRowAndColumn.locator(BasePage.LINK).nth(i),
-        `Значение в строке номер ${i + 1} не отображается или не соответствует ожидаемому '${strings[i]}'`,
-      ).toHaveText(strings[i], { timeout: Settings.DEFAULT_TIMEOUT });
-    }
+      for (let i: number = 0; i < strings.length; i++) {
+        await expect(
+          this.locatorTableRowAndColumn.locator(BasePage.LINK).nth(i),
+          `Значение в строке номер ${i + 1} не отображается или не соответствует ожидаемому '${strings[i]}'`,
+        ).toHaveText(strings[i], { timeout: Settings.DEFAULT_TIMEOUT });
+      }
+    });
+
   }
 
   /** Кликнуть на элемент с определённым текстом.
@@ -1429,14 +1432,16 @@ placeholder'ом '${placeholder}'.`, async () => {
    * @param nth Порядковый номер элемента.
    */
   public async clickOnElementWithText(elementText: string, nth: number = 0): Promise<void> {
-    const locatorElement = this.page.getByText(elementText, { exact: true }).nth(nth);
+    await allure.step(`Кликнуть на элемент с определённым текстом ('${elementText}').`, async () => {
+      const locatorElement: Locator = this.page.getByText(elementText, { exact: true }).nth(nth);
 
-    await expect(locatorElement, `Элемент с текстом '${elementText}' не отображается`).toBeVisible({
-      timeout: Settings.DEFAULT_TIMEOUT,
+      await expect(locatorElement, `Элемент с текстом '${elementText}' не отображается`).toBeVisible({
+        timeout: Settings.DEFAULT_TIMEOUT,
+      });
+      await expect(locatorElement, `Элемент с текстом '${elementText}' недоступен`).toBeEnabled();
+      await locatorElement.click();
+      await this.page.waitForLoadState(LoadStates.NETWORK_IDLE);
     });
-    await expect(locatorElement, `Элемент с текстом '${elementText}' недоступен`).toBeEnabled();
-    await locatorElement.click();
-    await this.page.waitForLoadState(LoadStates.NETWORK_IDLE);
   }
 
   /** Перейти на предыдущую или следующую страницу.
@@ -1467,17 +1472,19 @@ placeholder'ом '${placeholder}'.`, async () => {
     marked: boolean = true,
     nth: number = 0,
   ): Promise<void> {
-    const locatorCheckbox = this.page
-      .locator(BasePage.LABEL)
-      .filter({ hasText: text })
-      .locator(BasePage.CHECKBOX)
-      .nth(nth);
+    await allure.step(`Проверить checkbox с текстом '${text}'.`, async () => {
+      const locatorCheckbox: Locator = this.page
+        .locator(BasePage.LABEL)
+        .filter({ hasText: text })
+        .locator(BasePage.CHECKBOX)
+        .nth(nth);
 
-    if (marked) {
-      await expect(locatorCheckbox, `Checkbox '${text}' не отмечен`).toBeVisible();
-    } else {
-      await expect(locatorCheckbox, `Checkbox '${text}' не должен быть отмечен`).not.toBeVisible();
-    }
+      if (marked) {
+        await expect(locatorCheckbox, `Checkbox '${text}' не отмечен`).toBeVisible();
+      } else {
+        await expect(locatorCheckbox, `Checkbox '${text}' не должен быть отмечен`).not.toBeVisible();
+      }
+    });
   }
 
   /** Проверить текст в панели навигации.
@@ -1485,10 +1492,12 @@ placeholder'ом '${placeholder}'.`, async () => {
    * @param text Текст, который отображается в панели навигации.
    */
   public async checkTextInNavigationBar(text: string): Promise<void> {
-    await expect(
-      this.page.locator(BasePage.NAVIGATION_BAR),
-      `Текст не отображается в панели навигации или не соответствует ожидаемому '${text}'`,
-    ).toHaveText(text);
+    await allure.step(`Проверить текст '${text}' в панели навигации.`, async () => {
+      await expect(
+        this.page.locator(BasePage.NAVIGATION_BAR),
+        `Текст не отображается в панели навигации или не соответствует ожидаемому '${text}'`,
+      ).toHaveText(text);
+    });
   }
 
   /** Проверить заголовок и текст на вкладке 'Общая информация'.
@@ -1497,11 +1506,13 @@ placeholder'ом '${placeholder}'.`, async () => {
    * @param text Текст в строке, который соответствует заголовку.
    */
   public async checkTitleAndTextInTabGeneralInformation(title: string, text: string | RegExp): Promise<void> {
-    await expect(
-      this.page.locator(BasePage.DT).filter({ hasText: title }).locator(BasePage.DD),
-      `Заголовок или текст во вкладке 'Общая информация' не отображаются или не соответствуют 
+    await allure.step(`Проверить заголовок и текст на вкладке 'Общая информация'.`, async () => {
+      await expect(
+        this.page.locator(BasePage.DT).filter({ hasText: title }).locator(BasePage.DD),
+        `Заголовок или текст во вкладке 'Общая информация' не отображаются или не соответствуют 
 ожидаемым (заголовок: '${title}', текст: '${text}')`,
-    ).toHaveText(text);
+      ).toHaveText(text);
+    });
   }
 
   /** Получить текст на вкладке 'Общая информация' по заголовку строки.
@@ -1512,25 +1523,30 @@ placeholder'ом '${placeholder}'.`, async () => {
   public async getTextInTabGeneralInformation(title: string): Promise<string> {
     const locator: Locator = this.page.locator(BasePage.DT).filter({ hasText: title }).locator(BasePage.DD);
 
-    await expect(
-      locator,
-      `Заголовок строки во вкладке 'Общая информация' не отображается или не соответствует ожидаемому 
+    await allure.step(`Получить текст на вкладке 'Общая информация' по заголовку строки.`, async () => {
+      await expect(
+        locator,
+        `Заголовок строки во вкладке 'Общая информация' не отображается или не соответствует ожидаемому 
 (заголовок: '${title}')`,
-    ).toBeVisible();
+      ).toBeVisible();
+    });
+
     return locator.innerText();
   }
 
   /** Кликнуть на иконку в виде дискеты. */
   public async clickOnIconFloppyDisk(): Promise<void> {
-    const locatorIconFloppyDisk = this.page.locator(BasePage.ICON_FLOPPY_DISK);
+    await allure.step(`Кликнуть на иконку в виде дискеты.`, async () => {
+      const locatorIconFloppyDisk: Locator = this.page.locator(BasePage.ICON_FLOPPY_DISK);
 
-    await this.page.waitForTimeout(1_000);
+      await this.page.waitForTimeout(1_000);
 
-    await expect(locatorIconFloppyDisk, "Иконка в виде дискеты не отображается").toBeVisible({
-      timeout: Settings.DEFAULT_TIMEOUT,
+      await expect(locatorIconFloppyDisk, "Иконка в виде дискеты не отображается").toBeVisible({
+        timeout: Settings.DEFAULT_TIMEOUT,
+      });
+      await expect(locatorIconFloppyDisk, "Иконка в виде дискеты недоступна").toBeEnabled();
+      await locatorIconFloppyDisk.click();
     });
-    await expect(locatorIconFloppyDisk, "Иконка в виде дискеты недоступна").toBeEnabled();
-    await locatorIconFloppyDisk.click();
   }
 
   /** Проверить жёлтую индикацию у окна подтверждения.
@@ -1538,17 +1554,20 @@ placeholder'ом '${placeholder}'.`, async () => {
    * @param visible Элемент должен присутствовать на странице или нет (если 'False', то должен отсутствовать).
    */
   public async checkTitleModal(visible: boolean = true): Promise<void> {
-    const locatorTitleModal: Locator = this.page.locator(BasePage.TITLE_MODAL);
+    await allure.step(`Проверить жёлтую индикацию у окна подтверждения.`, async () => {
+      const locatorTitleModal: Locator = this.page.locator(BasePage.TITLE_MODAL);
 
-    if (visible) {
-      await expect(locatorTitleModal, "Жёлтая индикация у окна подтверждения не отображается").toBeVisible({
-        timeout: Settings.DEFAULT_TIMEOUT,
-      });
-    } else {
-      await expect(locatorTitleModal, "Жёлтая индикация у окна подтверждения не должна отображаться").not.toBeVisible({
-        timeout: Settings.DEFAULT_TIMEOUT,
-      });
-    }
+      if (visible) {
+        await expect(locatorTitleModal, `Жёлтая индикация у окна подтверждения не отображается`).toBeVisible({
+          timeout: Settings.DEFAULT_TIMEOUT,
+        });
+      } else {
+        await expect(locatorTitleModal, `Жёлтая индикация у окна подтверждения не должна 
+отображаться`).not.toBeVisible({
+          timeout: Settings.DEFAULT_TIMEOUT,
+        });
+      }
+    });
   }
 
   /** Проверить сортировку ссылок на странице.
@@ -1558,19 +1577,21 @@ placeholder'ом '${placeholder}'.`, async () => {
    */
   public async checkLinksSorting(numberOfFirstElement: number = 0, reverse: boolean = false): Promise<void> {
     // TODO подумать, как сделать другие проверки сортировки без хардкода, как в этом методе
-    // Ожидание в одну секунду
-    await this.page.waitForTimeout(1_000);
-    const listLinks = await this.locatorLink.evaluateAll((elements) =>
-      // eslint-disable-next-line no-undef
-      elements.map((el) => (el as HTMLElement).innerText.trim()),
-    );
-    const slicedLinks: string[] = listLinks.slice(numberOfFirstElement);
-    const sortedLinks: string[] = [...slicedLinks].sort();
-    const reverseSortedLinks: string[] = reverse ? sortedLinks.reverse() : sortedLinks;
+    await allure.step(`Проверить сортировку ссылок на странице.`, async () => {
+      // Ожидание в одну секунду
+      await this.page.waitForTimeout(1_000);
+      const listLinks = await this.locatorLink.evaluateAll((elements) =>
+        // eslint-disable-next-line no-undef
+        elements.map((el) => (el as HTMLElement).innerText.trim()),
+      );
+      const slicedLinks: string[] = listLinks.slice(numberOfFirstElement);
+      const sortedLinks: string[] = [...slicedLinks].sort();
+      const reverseSortedLinks: string[] = reverse ? sortedLinks.reverse() : sortedLinks;
 
-    if (JSON.stringify(slicedLinks) !== JSON.stringify(reverseSortedLinks)) {
-      throw new Error("Ссылки неправильно отсортированы");
-    }
+      if (JSON.stringify(slicedLinks) !== JSON.stringify(reverseSortedLinks)) {
+        throw new Error("Ссылки неправильно отсортированы");
+      }
+    });
   }
 
   /** Кликнуть на checkbox в таблице.
@@ -1578,13 +1599,15 @@ placeholder'ом '${placeholder}'.`, async () => {
    * @param nth Порядковый номер checkbox'а.
    */
   public async clickOnCheckboxInTable(nth: number): Promise<void> {
-    const locatorCheckboxInTable = this.page.locator(BasePage.CHECKBOX_IN_TABLE).nth(nth);
+    await allure.step(`Кликнуть на checkbox в таблице.`, async () => {
+      const locatorCheckboxInTable: Locator = this.page.locator(BasePage.CHECKBOX_IN_TABLE).nth(nth);
 
-    await expect(locatorCheckboxInTable, `Checkbox с порядковым номером '${nth}' не отображается`).toBeVisible({
-      timeout: Settings.DEFAULT_TIMEOUT,
+      await expect(locatorCheckboxInTable, `Checkbox с порядковым номером '${nth}' не отображается`).toBeVisible({
+        timeout: Settings.DEFAULT_TIMEOUT,
+      });
+      await expect(locatorCheckboxInTable, `Checkbox с порядковым номером '${nth}' недоступен`).toBeEnabled();
+      await locatorCheckboxInTable.click();
     });
-    await expect(locatorCheckboxInTable, `Checkbox с порядковым номером '${nth}' недоступен`).toBeEnabled();
-    await locatorCheckboxInTable.click();
   }
 
   /** Кликнуть на checkbox в таблице (по тексту).
@@ -1592,15 +1615,17 @@ placeholder'ом '${placeholder}'.`, async () => {
    * @param text Текст в таблице справа от checkbox'а.
    */
   public async clickOnCheckboxByTextInTable(text: string): Promise<void> {
-    const locatorCheckboxByTextInTable: Locator = this.page
-      .getByRole(Roles.LINK, { name: text, exact: true })
-      .locator("xpath=../preceding-sibling::td[1]/label");
+    await allure.step(`Кликнуть на checkbox в таблице (по тексту).`, async () => {
+      const locatorCheckboxByTextInTable: Locator = this.page
+        .getByRole(Roles.LINK, { name: text, exact: true })
+        .locator("xpath=../preceding-sibling::td[1]/label");
 
-    await expect(locatorCheckboxByTextInTable, `Checkbox с текстом '${text}' не отображается`).toBeVisible({
-      timeout: Settings.DEFAULT_TIMEOUT,
+      await expect(locatorCheckboxByTextInTable, `Checkbox с текстом '${text}' не отображается`).toBeVisible({
+        timeout: Settings.DEFAULT_TIMEOUT,
+      });
+      await expect(locatorCheckboxByTextInTable, `Checkbox с текстом '${text}' недоступен`).toBeEnabled();
+      await locatorCheckboxByTextInTable.click();
     });
-    await expect(locatorCheckboxByTextInTable, `Checkbox с текстом '${text}' недоступен`).toBeEnabled();
-    await locatorCheckboxByTextInTable.click();
   }
 
   /** Проверить галочку у checkbox'а в таблице.
@@ -1608,10 +1633,12 @@ placeholder'ом '${placeholder}'.`, async () => {
    * @param nth Порядковый номер checkbox'а.
    */
   public async checkCheckboxInTable(nth: number): Promise<void> {
-    await expect(
-      this.page.locator(BasePage.TR).nth(nth).locator(BasePage.TABLE_COLUMN).first().locator(BasePage.PATH),
-      `Checkbox с порядковым номером '${nth}' не отмечен галочкой`,
-    ).toHaveCSS(CssKeysAndValues.DISPLAY, CssKeysAndValues.INLINE);
+    await allure.step(`Проверить галочку у checkbox'а в таблице.`, async () => {
+      await expect(
+        this.page.locator(BasePage.TR).nth(nth).locator(BasePage.TABLE_COLUMN).first().locator(BasePage.PATH),
+        `Checkbox с порядковым номером '${nth}' не отмечен галочкой`,
+      ).toHaveCSS(CssKeysAndValues.DISPLAY, CssKeysAndValues.INLINE);
+    });
   }
 
   /** Проверить закрашен или нет checkbox 'Компонент' в таблице.
@@ -1619,13 +1646,15 @@ placeholder'ом '${placeholder}'.`, async () => {
    * @param marked Checkbox 'Компонент' должен быть закрашен или нет (если 'False', то не закрашен).
    */
   public async checkCheckboxComponentInTable(marked: boolean = true): Promise<void> {
-    const locatorCheckboxComponentInTable = this.page.locator(BasePage.CHECKBOX_COMPONENT_IN_TABLE);
+    await allure.step(`Проверить закрашен или нет checkbox 'Компонент' в таблице.`, async () => {
+      const locatorCheckboxComponentInTable: Locator = this.page.locator(BasePage.CHECKBOX_COMPONENT_IN_TABLE);
 
-    if (marked) {
-      await expect(locatorCheckboxComponentInTable, "Checkbox 'Компонент' не закрашен").toBeVisible();
-    } else {
-      await expect(locatorCheckboxComponentInTable, "Checkbox 'Компонент' не должен быть закрашен").not.toBeVisible();
-    }
+      if (marked) {
+        await expect(locatorCheckboxComponentInTable, "Checkbox 'Компонент' не закрашен").toBeVisible();
+      } else {
+        await expect(locatorCheckboxComponentInTable, "Checkbox 'Компонент' не должен быть закрашен").not.toBeVisible();
+      }
+    });
   }
 
   /** Кликнуть на элемент с определённым placeholder'ом.
@@ -1633,21 +1662,26 @@ placeholder'ом '${placeholder}'.`, async () => {
    * @param placeholder Placeholder элемента.
    */
   public async clickOnElementWithPlaceholder(placeholder: string): Promise<void> {
-    const locatorElementByPlaceholder = this.page.getByPlaceholder(placeholder);
+    await allure.step(`Кликнуть на элемент с определённым placeholder'ом '${placeholder}'.`, async () => {
+      const locatorElementByPlaceholder: Locator = this.page.getByPlaceholder(placeholder);
 
-    await expect(locatorElementByPlaceholder, `Элемент с placeholder'ом '${placeholder}' не отображается`).toBeVisible({
-      timeout: Settings.DEFAULT_TIMEOUT,
+      await expect(locatorElementByPlaceholder, `Элемент с placeholder'ом '${placeholder}' не 
+отображается`).toBeVisible({
+        timeout: Settings.DEFAULT_TIMEOUT,
+      });
+      await expect(locatorElementByPlaceholder, `Элемент с placeholder'ом '${placeholder}' недоступен`).toBeEnabled();
+      await locatorElementByPlaceholder.click();
     });
-    await expect(locatorElementByPlaceholder, `Элемент с placeholder'ом '${placeholder}' недоступен`).toBeEnabled();
-    await locatorElementByPlaceholder.click();
   }
 
-  /** Отключить сеть.
+  /** Отключить или включить сеть.
    *
    * @param offline Сеть отключена (если 'False', то сеть будет включена).
    */
   public async disconnectNetwork(offline: boolean = true): Promise<void> {
-    await this.page.context().setOffline(offline);
+    await allure.step(`Отключить или включить сеть.`, async () => {
+      await this.page.context().setOffline(offline);
+    });
   }
 
   /** Проверить видимость индикации у тоста переноса разметки.
@@ -1655,33 +1689,35 @@ placeholder'ом '${placeholder}'.`, async () => {
    * @param color Цвет индикации у тоста (возможные значения: green, red, yellow)
    */
   public async checkVisibilityIndication(color: string): Promise<void> {
-    const validColors: string[] = [Colors.GREEN, Colors.RED, Colors.YELLOW];
-    if (!validColors.includes(color as any)) {
-      throw new Error(`Недопустимое значение ('${color}'). Выберите из: ${validColors}`);
-    }
+    await allure.step(`Проверить видимость индикации у тоста переноса разметки.`, async () => {
+      const validColors: string[] = [Colors.GREEN, Colors.RED, Colors.YELLOW];
+      if (!validColors.includes(color as any)) {
+        throw new Error(`Недопустимое значение ('${color}'). Выберите из: ${validColors}`);
+      }
 
-    if (color === Colors.GREEN) {
-      await expect(
-        this.page.locator(BasePage.GREEN_INDICATION),
-        "Зеленая индикация у тоста переноса разметки не отображается",
-      ).toBeVisible({
-        timeout: Settings.DEFAULT_TIMEOUT,
-      });
-    } else if (color === Colors.RED) {
-      await expect(
-        this.page.locator(BasePage.RED_INDICATION),
-        "Красная индикация у тоста переноса разметки не отображается",
-      ).toBeVisible({
-        timeout: Settings.DEFAULT_TIMEOUT,
-      });
-    } else {
-      await expect(
-        this.page.locator(BasePage.YELLOW_INDICATION),
-        "Жёлтая индикация у тоста переноса разметки не отображается",
-      ).toBeVisible({
-        timeout: Settings.DEFAULT_TIMEOUT,
-      });
-    }
+      if (color === Colors.GREEN) {
+        await expect(
+          this.page.locator(BasePage.GREEN_INDICATION),
+          "Зеленая индикация у тоста переноса разметки не отображается",
+        ).toBeVisible({
+          timeout: Settings.DEFAULT_TIMEOUT,
+        });
+      } else if (color === Colors.RED) {
+        await expect(
+          this.page.locator(BasePage.RED_INDICATION),
+          "Красная индикация у тоста переноса разметки не отображается",
+        ).toBeVisible({
+          timeout: Settings.DEFAULT_TIMEOUT,
+        });
+      } else {
+        await expect(
+          this.page.locator(BasePage.YELLOW_INDICATION),
+          "Жёлтая индикация у тоста переноса разметки не отображается",
+        ).toBeVisible({
+          timeout: Settings.DEFAULT_TIMEOUT,
+        });
+      }
+    });
   }
 
   /** Проверить видимость и доступность кнопки с определённым текстом.
@@ -1689,12 +1725,15 @@ placeholder'ом '${placeholder}'.`, async () => {
    * @param buttonText Текст кнопки.
    */
   public async checkButtonWithText(buttonText: string): Promise<void> {
-    const locatorButton: Locator = this.page.getByRole(Roles.BUTTON, { name: buttonText, exact: true });
+    await allure.step(`Проверить видимость и доступность кнопки с определённым 
+текстом '${buttonText}'.`, async () => {
+      const locatorButton: Locator = this.page.getByRole(Roles.BUTTON, { name: buttonText, exact: true });
 
-    await expect(locatorButton, `Кнопка с текстом '${buttonText}' не отображается`).toBeVisible({
-      timeout: Settings.DEFAULT_TIMEOUT,
+      await expect(locatorButton, `Кнопка с текстом '${buttonText}' не отображается`).toBeVisible({
+        timeout: Settings.DEFAULT_TIMEOUT,
+      });
+      await expect(locatorButton, `Кнопка с текстом '${buttonText}' недоступна`).toBeEnabled();
     });
-    await expect(locatorButton, `Кнопка с текстом '${buttonText}' недоступна`).toBeEnabled();
   }
 
   /** Кликнуть на кнопку с определённым текстом.
@@ -1702,19 +1741,23 @@ placeholder'ом '${placeholder}'.`, async () => {
    * @param buttonText Текст кнопки.
    */
   async clickOnButtonWithText(buttonText: string): Promise<void> {
-    await this.checkButtonWithText(buttonText);
-    await this.page.getByRole(Roles.BUTTON, { name: buttonText, exact: true }).click();
+    await allure.step(`Кликнуть на кнопку с определённым текстом '${buttonText}'.`, async () => {
+      await this.checkButtonWithText(buttonText);
+      await this.page.getByRole(Roles.BUTTON, { name: buttonText, exact: true }).click();
+    });
   }
 
   /** Кликнуть ComboBox 'Версия' в модальном окне переноса разметки. */
   async clickOnComboBoxVersionTransferOfMarkings(): Promise<void> {
     const locatorComboBoxVersion: Locator = this.page.locator(BasePage.COMBO_BOX_IN_WINDOW_TRANSFER_OF_MARKINGS).last();
 
-    await expect(locatorComboBoxVersion, "ComboBox 'Версия' не отображается").toBeVisible({
-      timeout: Settings.DEFAULT_TIMEOUT,
+    await allure.step(`Кликнуть ComboBox 'Версия' в модальном окне переноса разметки.`, async () => {
+      await expect(locatorComboBoxVersion, "ComboBox 'Версия' не отображается").toBeVisible({
+        timeout: Settings.DEFAULT_TIMEOUT,
+      });
+      await expect(locatorComboBoxVersion, "ComboBox 'Версия' недоступен").toBeEnabled();
+      await locatorComboBoxVersion.click();
     });
-    await expect(locatorComboBoxVersion, "ComboBox 'Версия' недоступен").toBeEnabled();
-    await locatorComboBoxVersion.click();
   }
 
   /** Проверить галку в checkbox'е 'Компонент' в таблице.
@@ -1722,23 +1765,27 @@ placeholder'ом '${placeholder}'.`, async () => {
    * @param marked Если 'false', то галка не отображается (По умолчанию 'true').
    */
   async checkCheckMarkInCheckboxComponentInTable(marked: boolean = true): Promise<void> {
-    const locatorCheckMark: Locator = this.page.locator(BasePage.CHECK_MARK_IN_CHECKBOX_COMPONENT_IN_TABLE);
+    await allure.step(`Проверить галку в checkbox'е 'Компонент' в таблице.`, async () => {
+      const locatorCheckMark: Locator = this.page.locator(BasePage.CHECK_MARK_IN_CHECKBOX_COMPONENT_IN_TABLE);
 
-    if (marked)
-      await expect(locatorCheckMark, "Галка в checkbox'е 'Компонент' в таблице не отображается").toBeVisible();
-    else
-      await expect(
-        locatorCheckMark,
-        "Галка в checkbox'е 'Компонент' в таблице не должна отображаться",
-      ).not.toBeVisible();
+      if (marked)
+        await expect(locatorCheckMark, "Галка в checkbox'е 'Компонент' в таблице не отображается").toBeVisible();
+      else
+        await expect(
+          locatorCheckMark,
+          "Галка в checkbox'е 'Компонент' в таблице не должна отображаться",
+        ).not.toBeVisible();
+    });
   }
 
   /** Проверить вертикальный скролл в списке элементов в окне переноса разметки. */
   async checkVerticalScrolling(): Promise<void> {
-    await expect(
-      this.page.locator(BasePage.ELEMENTS_IN_PRODUCT_FIELD_IN_MARKUP_TRANSFER_WINDOW),
-      "Вертикальный скролл в списке элементов в окне переноса разметки не отображается",
-    ).toHaveClass(RegularExpressions.PATTERN_CLASS_SCROLL_THIN);
+    await allure.step(`Проверить вертикальный скролл в списке элементов в окне переноса разметки.`, async () => {
+      await expect(
+        this.page.locator(BasePage.ELEMENTS_IN_PRODUCT_FIELD_IN_MARKUP_TRANSFER_WINDOW),
+        "Вертикальный скролл в списке элементов в окне переноса разметки не отображается",
+      ).toHaveClass(RegularExpressions.PATTERN_CLASS_SCROLL_THIN);
+    });
   }
 
   /** Ввести текст в поле продукт в окне переноса разметки.
@@ -1746,7 +1793,9 @@ placeholder'ом '${placeholder}'.`, async () => {
    * @param text Текст вводимый в combobox.
    */
   async fillInProductFieldInMarkupTransferWindow(text: string): Promise<void> {
-    await this.page.locator(BasePage.PRODUCT_FIELD_IN_MARKUP_TRANSFER_WINDOW).pressSequentially(text);
+    await allure.step(`Ввести текст '${text}' в поле продукт в окне переноса разметки.`, async () => {
+      await this.page.locator(BasePage.PRODUCT_FIELD_IN_MARKUP_TRANSFER_WINDOW).pressSequentially(text);
+    });
   }
 
   /** Проверить элементы списка в поле 'Продукт' или в поле 'Версия' в окне переноса разметки.
@@ -1754,16 +1803,19 @@ placeholder'ом '${placeholder}'.`, async () => {
    * @param listElements Список элементов.
    */
   async checkElementsInFieldInMarkupTransferWindow(listElements: string[]): Promise<void> {
-    const locatorElement: Locator = this.page.locator(BasePage.ELEMENT_IN_PRODUCT_FIELD_IN_MARKUP_TRANSFER_WINDOW);
+    await allure.step(`Проверить элементы списка в поле 'Продукт' или в поле 'Версия' в окне переноса
+разметки.`, async () => {
+      const locatorElement: Locator = this.page.locator(BasePage.ELEMENT_IN_PRODUCT_FIELD_IN_MARKUP_TRANSFER_WINDOW);
 
-    let i: number = 0;
-    for (const element of listElements) {
-      await expect(
-        locatorElement.nth(i),
-        `Элемент в строке номер ${i + 1} не отображается или значение не соответствует ожидаемому '${element}'`,
-      ).toHaveText(element, { timeout: Settings.DEFAULT_TIMEOUT });
-      i++;
-    }
+      let i: number = 0;
+      for (const element of listElements) {
+        await expect(
+          locatorElement.nth(i),
+          `Элемент в строке номер ${i + 1} не отображается или значение не соответствует ожидаемому '${element}'`,
+        ).toHaveText(element, { timeout: Settings.DEFAULT_TIMEOUT });
+        i++;
+      }
+    });
   }
 
   /** Кликнуть на элемент с определённым titl'ом.
@@ -1772,12 +1824,14 @@ placeholder'ом '${placeholder}'.`, async () => {
    * @param nth Порядковый номер элемента (по умолчанию `nth = 0`).
    */
   async clickOnElementWithTitle(title: string, nth: number = 0): Promise<void> {
-    const locatorElementByTitle: Locator = this.page.getByTitle(title).nth(nth);
+    await allure.step(`Кликнуть на элемент с определённым titl'ом '${title}'.`, async () => {
+      const locatorElementByTitle: Locator = this.page.getByTitle(title).nth(nth);
 
-    await expect(locatorElementByTitle, `Элемент с titl'ом '${title}' не отображается`).toBeVisible({
-      timeout: Settings.DEFAULT_TIMEOUT,
+      await expect(locatorElementByTitle, `Элемент с titl'ом '${title}' не отображается`).toBeVisible({
+        timeout: Settings.DEFAULT_TIMEOUT,
+      });
+      await expect(locatorElementByTitle, `Элемент с titl'ом '${title}' недоступен`).toBeEnabled();
+      await locatorElementByTitle.click();
     });
-    await expect(locatorElementByTitle, `Элемент с titl'ом '${title}' недоступен`).toBeEnabled();
-    await locatorElementByTitle.click();
   }
 }
