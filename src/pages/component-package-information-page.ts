@@ -77,17 +77,20 @@ export class ComponentPackageInformationPage extends BasePage {
    * @param count Ожидаемое количество элементов.
    */
   async checkTitlesCount(titleText: string, count: number): Promise<void> {
-    const locatorTitle: Locator = this.page
-      .locator(ComponentPackageInformationPage.DD_PROGRAMMING_LANGUAGE)
-      .locator(ComponentPackageInformationPage.CHIPS_INPUT)
-      .getByTitle(titleText);
-    await expect
-      .soft(
-        locatorTitle,
-        `Элемент с titl'ом '${titleText}' не отображается на странице или количество таких элементов не
- соответствует ожидаемому (ожидаемое количество: ${count})`,
-      )
-      .toHaveCount(count, { timeout: Settings.DEFAULT_TIMEOUT });
+    await allure.step(`Проверить текст '${titleText}' в блоке справа от текста 
+'Язык программирования'.`, async () => {
+      const locatorTitle: Locator = this.page
+        .locator(ComponentPackageInformationPage.DD_PROGRAMMING_LANGUAGE)
+        .locator(ComponentPackageInformationPage.CHIPS_INPUT)
+        .getByTitle(titleText);
+      await expect
+        .soft(
+          locatorTitle,
+          `Элемент с titl'ом '${titleText}' не отображается на странице или количество таких элементов не 
+соответствует ожидаемому (ожидаемое количество: ${count})`,
+        )
+        .toHaveCount(count, { timeout: Settings.DEFAULT_TIMEOUT });
+    });
   }
 
   /** Ввести текст в блок справа от текста 'Язык программирования'.
@@ -95,15 +98,17 @@ export class ComponentPackageInformationPage extends BasePage {
    * @param text Текст, который будет введён в блок справа от текста 'Язык программирования'.
    */
   async fillInChipsInput(text: string): Promise<void> {
-    const locatorInput: Locator = this.page
-      .locator(ComponentPackageInformationPage.DD_PROGRAMMING_LANGUAGE)
-      .locator(ComponentPackageInformationPage.CHIPS_INPUT)
-      .locator("div")
-      .first();
-    await expect.soft(locatorInput, "Блок справа от текста 'Язык программирования' не отображается").toBeVisible();
-    await expect.soft(locatorInput, "Блок справа от текста 'Язык программирования' недоступен").toBeEnabled();
-    await locatorInput.click();
-    await locatorInput.pressSequentially(text);
+    await allure.step(`Ввести текст '${text}' в блок справа от текста 'Язык программирования'.`, async () => {
+      const locatorInput: Locator = this.page
+        .locator(ComponentPackageInformationPage.DD_PROGRAMMING_LANGUAGE)
+        .locator(ComponentPackageInformationPage.CHIPS_INPUT)
+        .locator("div")
+        .first();
+      await expect.soft(locatorInput, "Блок справа от текста 'Язык программирования' не отображается").toBeVisible();
+      await expect.soft(locatorInput, "Блок справа от текста 'Язык программирования' недоступен").toBeEnabled();
+      await locatorInput.click();
+      await locatorInput.pressSequentially(text);
+    });
   }
 
   /** Удалить язык программирования из списка.
@@ -111,24 +116,26 @@ export class ComponentPackageInformationPage extends BasePage {
    * @param nameProgrammingLanguage Название языка программирования.
    */
   async deleteProgrammingLanguage(nameProgrammingLanguage: string): Promise<void> {
-    const locatorNameProgrammingLanguage: Locator = this.page
-      .locator(BasePage.SPAN)
-      .filter({ hasText: nameProgrammingLanguage })
-      .locator("xpath=./following-sibling::button[1]");
+    await allure.step(`Удалить язык программирования '${nameProgrammingLanguage}' из списка.`, async () => {
+      const locatorNameProgrammingLanguage: Locator = this.page
+        .locator(BasePage.SPAN)
+        .filter({ hasText: nameProgrammingLanguage })
+        .locator("xpath=./following-sibling::button[1]");
 
-    await expect(
-      locatorNameProgrammingLanguage,
-      `Кнопка удаления языка программирования '${nameProgrammingLanguage}' не отображается`,
-    ).toBeVisible({ timeout: Settings.DEFAULT_TIMEOUT });
-    await expect(
-      locatorNameProgrammingLanguage,
-      `Кнопка удаления языка программирования '${nameProgrammingLanguage}' недоступна`,
-    ).toBeEnabled();
-    await locatorNameProgrammingLanguage.click();
-    await expect(
-      locatorNameProgrammingLanguage,
-      `Кнопка удаления языка программирования '${nameProgrammingLanguage}' не должна отображаться`,
-    ).not.toBeVisible({ timeout: Settings.DEFAULT_TIMEOUT });
+      await expect(
+        locatorNameProgrammingLanguage,
+        `Кнопка удаления языка программирования '${nameProgrammingLanguage}' не отображается`,
+      ).toBeVisible({ timeout: Settings.DEFAULT_TIMEOUT });
+      await expect(
+        locatorNameProgrammingLanguage,
+        `Кнопка удаления языка программирования '${nameProgrammingLanguage}' недоступна`,
+      ).toBeEnabled();
+      await locatorNameProgrammingLanguage.click();
+      await expect(
+        locatorNameProgrammingLanguage,
+        `Кнопка удаления языка программирования '${nameProgrammingLanguage}' не должна отображаться`,
+      ).not.toBeVisible({ timeout: Settings.DEFAULT_TIMEOUT });
+    });
   }
 
   /** Кликнуть на иконку в виде плюса в кружочке.
@@ -136,19 +143,21 @@ export class ComponentPackageInformationPage extends BasePage {
    * @param nth Порядковый номер иконки.
    */
   async clickOnIconPlusInCircle(nth: number = 0): Promise<void> {
-    const locatorPlusIconInCircle: Locator = this.page
-      .locator(ComponentPackageInformationPage.ICON_PLUS_IN_CIRCLE)
-      .nth(nth);
+    await allure.step(`Кликнуть на иконку в виде плюса в кружочке.`, async () => {
+      const locatorPlusIconInCircle: Locator = this.page
+        .locator(ComponentPackageInformationPage.ICON_PLUS_IN_CIRCLE)
+        .nth(nth);
 
-    await expect(
-      locatorPlusIconInCircle,
-      `Иконка в виде плюса в кружочке с порядковым номером '${nth}' не отображается`,
-    ).toBeVisible({ timeout: Settings.DEFAULT_TIMEOUT });
-    await expect(
-      locatorPlusIconInCircle,
-      `Иконка в виде плюса в кружочке с порядковым номером '${nth}' недоступна`,
-    ).toBeEnabled();
-    await locatorPlusIconInCircle.click();
+      await expect(
+        locatorPlusIconInCircle,
+        `Иконка в виде плюса в кружочке с порядковым номером '${nth}' не отображается`,
+      ).toBeVisible({ timeout: Settings.DEFAULT_TIMEOUT });
+      await expect(
+        locatorPlusIconInCircle,
+        `Иконка в виде плюса в кружочке с порядковым номером '${nth}' недоступна`,
+      ).toBeEnabled();
+      await locatorPlusIconInCircle.click();
+    });
   }
 
   /** Ввести текст в input для ввода url'а на внешний/внутренний исходный код.
@@ -156,15 +165,18 @@ export class ComponentPackageInformationPage extends BasePage {
    * @param text Текст, который будет введён в input для ввода url'а на внешний/внутренний исходный код.
    */
   async fillInInputUrl(text: string): Promise<void> {
-    await expect(
-      this.locatorInputUrl,
-      "Input для ввода url'а на внешний/внутренний исходный код не отображается",
-    ).toBeVisible({ timeout: Settings.DEFAULT_TIMEOUT });
-    await expect(
-      this.locatorInputUrl,
-      "Input для ввода url'а на внешний/внутренний исходный код недоступен",
-    ).toBeEnabled();
-    await this.locatorInputUrl.fill(text);
+    await allure.step(`Ввести текст '${text}' в input для ввода url'а на внешний/внутренний исходный 
+код.`, async () => {
+      await expect(
+        this.locatorInputUrl,
+        "Input для ввода url'а на внешний/внутренний исходный код не отображается",
+      ).toBeVisible({ timeout: Settings.DEFAULT_TIMEOUT });
+      await expect(
+        this.locatorInputUrl,
+        "Input для ввода url'а на внешний/внутренний исходный код недоступен",
+      ).toBeEnabled();
+      await this.locatorInputUrl.fill(text);
+    });
   }
 
   /** Кликнуть на иконку меню.
@@ -172,20 +184,24 @@ export class ComponentPackageInformationPage extends BasePage {
    * @param nth Порядковый номер иконки.
    */
   async clickOnIconMenu(nth: number = 0): Promise<void> {
-    const locatorIconMenu: Locator = this.page.locator(ComponentPackageInformationPage.ICON_MENU).nth(nth);
+    await allure.step(`Кликнуть на иконку меню.`, async () => {
+      const locatorIconMenu: Locator = this.page.locator(ComponentPackageInformationPage.ICON_MENU).nth(nth);
 
-    await expect(locatorIconMenu, `Иконка меню с порядковым номером '${nth}' не отображается`).toBeVisible({
-      timeout: Settings.DEFAULT_TIMEOUT,
+      await expect(locatorIconMenu, `Иконка меню с порядковым номером '${nth}' не отображается`).toBeVisible({
+        timeout: Settings.DEFAULT_TIMEOUT,
+      });
+      await expect(locatorIconMenu, `Иконка меню с порядковым номером '${nth}' недоступна`).toBeEnabled();
+      await locatorIconMenu.click();
     });
-    await expect(locatorIconMenu, `Иконка меню с порядковым номером '${nth}' недоступна`).toBeEnabled();
-    await locatorIconMenu.click();
   }
 
   /** Проверить кнопку 'Отмена'. */
   async checkButtonCancel(): Promise<void> {
-    await expect
-      .soft(this.page.getByTitle(UITextElements.CANCEL), "Кнопка 'Отмена' не отображается")
-      .toBeVisible({ timeout: Settings.DEFAULT_TIMEOUT });
+    await allure.step(`Проверить кнопку 'Отмена'.`, async () => {
+      await expect
+        .soft(this.page.getByTitle(UITextElements.CANCEL), "Кнопка 'Отмена' не отображается")
+        .toBeVisible({ timeout: Settings.DEFAULT_TIMEOUT });
+    });
   }
 
   /** Проверить текст в input'е для ввода url'а на внешний/внутренний исходный код.
@@ -193,9 +209,12 @@ export class ComponentPackageInformationPage extends BasePage {
    * @param text Текст, который должен присутствовать в input'е для ввода url'а на внешний/внутренний исходный код.
    */
   async checkTextInInputUrl(text: string): Promise<void> {
-    await expect(
-      this.locatorInputUrl,
-      `Input для ввода url'а на внешний/внутренний исходный код не содержит ожидаемый текст '${text}'`,
-    ).toHaveValue(text);
+    await allure.step(`Проверить текст '${text}' в input'е для ввода url'а на внешний/внутренний исходный 
+код.`, async () => {
+      await expect(
+        this.locatorInputUrl,
+        `Input для ввода url'а на внешний/внутренний исходный код не содержит ожидаемый текст '${text}'`,
+      ).toHaveValue(text);
+    });
   }
 }

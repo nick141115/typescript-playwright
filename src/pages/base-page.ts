@@ -256,9 +256,9 @@ export class BasePage {
 
   /** Нажать кнопку 'Выйти'. */
   public async logout(): Promise<void> {
-    const locatorLogoutButton: Locator = this.page.getByRole(Roles.BUTTON, { name: BasePage.LOGOUT_BUTTON });
-
     await allure.step(`Нажать кнопку 'Выйти'.`, async () => {
+      const locatorLogoutButton: Locator = this.page.getByRole(Roles.BUTTON, { name: BasePage.LOGOUT_BUTTON });
+
       await expect(locatorLogoutButton, "Кнопка 'Выйти' не отображается").toBeVisible();
       await expect(locatorLogoutButton, "Кнопка 'Выйти' недоступна").toBeEnabled();
       await locatorLogoutButton.click();
@@ -1180,9 +1180,9 @@ placeholder'ом '${placeholder}'.`, async () => {
    * @param nth Порядковый номер (по умолчанию первая ссылка (nth = 0)).
    */
   public async checkTargetBlank(linkText: string, nth: number = 0): Promise<void> {
-    const locatorLink: Locator = this.page.getByRole(Roles.LINK, { name: linkText }).nth(nth);
-
     await allure.step(`Проверить, что ссылка открывается в новой вкладке.`, async () => {
+      const locatorLink: Locator = this.page.getByRole(Roles.LINK, { name: linkText }).nth(nth);
+
       await expect(
         locatorLink,
         `Ссылка с текстом '${linkText}' не отображается или она не открывается в новой вкладке`,

@@ -9,13 +9,13 @@ import * as allure from "allure-js-commons";
 export class ProductAssemblyInformationPage extends BasePage {
   // Селекторы и текстовые константы, необходимые для работы класса ProductAssemblyInformationPage.
   /** Иконка в виде галочки. */
-  private readonly VERIFIED_ICON = ".verifiedIcon";
+  private readonly VERIFIED_ICON: string = ".verifiedIcon";
   /** Подсказка 'Верифицированная версия', отображающаяся при наведении курсора. */
-  private readonly VERIFIED_VERSION = `//span[text()='${UITextElements.VERIFIED_VERSION}']`;
+  private readonly VERIFIED_VERSION: string = `//span[text()='${UITextElements.VERIFIED_VERSION}']`;
   /** Иконка ссылок. */
-  private readonly LINK_ICON = "[aria-label='В пакет добавлены все ссылки']";
+  private readonly LINK_ICON: string = "[aria-label='В пакет добавлены все ссылки']";
   /** Checkbox 'Отклонение согласовано'. */
-  private readonly CHECKBOX_DEVIATION_IS_AGREED = `div:nth-child(2) > 
+  private readonly CHECKBOX_DEVIATION_IS_AGREED: string = `div:nth-child(2) > 
 .selectContainer__menu div:nth-child(1) ${BasePage.PATH}`;
 
   // Локаторы, необходимые для работы класса ProductAssemblyInformationPage.
