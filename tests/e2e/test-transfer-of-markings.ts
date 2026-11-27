@@ -588,7 +588,8 @@ export class TestTransferOfMarkings extends BaseTest {
     await this.productInformationPage.clickOnLink(UITextElements.COMPONENT_COMPOSITION);
   }
 
-  /** Очистка разметки компонента.
+  /**
+   * Очистка разметки компонента.
    *
    * @param componentName Название компонента.
    */

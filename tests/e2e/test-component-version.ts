@@ -54,47 +54,46 @@ export class TestComponentVersion extends BaseTest {
   async testComponentVersionEditingStatus(): Promise<void> {
     await allure.description(`Баг: при выборе значения в combobox'е иногда значение не сохраняется.`);
 
-    try {
-      // 1. Предусловие: Пользователь с правами редактирования паспортов компонентов авторизован в сервисе, открыта
-      // страница "Компоненты", выбран один из компонентов списка, выбрана версия компонента, статус
-      // разработки "Не указан"
-      await this.componentPage.clickOnLink(UITextElements.ALL_COMPONENTS_TAB);
-      await this.componentPage.clickOnLink(Components.ACCORDSDK);
+    // 1. Предусловие: Пользователь с правами редактирования паспортов компонентов авторизован в сервисе, открыта
+    // страница "Компоненты", выбран один из компонентов списка, выбрана версия компонента, статус
+    // разработки "Не указан"
+    await this.componentPage.clickOnLink(UITextElements.ALL_COMPONENTS_TAB);
+    await this.componentPage.clickOnLink(Components.ACCORDSDK);
 
-      await this.componentInformationPage.clickOnLink(UITextElements.VERSIONS_TAB);
-      await this.componentInformationPage.clickOnLink(Versions.VERSION_ACCORDSDK);
+    await this.componentInformationPage.clickOnLink(UITextElements.VERSIONS_TAB);
+    await this.componentInformationPage.clickOnLink(Versions.VERSION_ACCORDSDK);
 
-      // 2. Проверить отображение информации в поле "Статус разработки"
-      await this.componentVersionInformationPage.checkFirstComboBox(UITextElements.ABSENT);
+    // 2. Проверить отображение информации в поле "Статус разработки"
+    await this.componentVersionInformationPage.checkFirstComboBox(UITextElements.ABSENT);
 
-      // 3. Установить курсор в поле "Статус разработки"
-      await this.componentVersionInformationPage.clickOnFirstComboBox();
+    // 3. Установить курсор в поле "Статус разработки"
+    await this.componentVersionInformationPage.clickOnFirstComboBox();
 
-      // 4. Выбрать любой статус кроме "Не указан" и "Не поддерживается"
-      await this.componentVersionInformationPage.clickOnElementWithText(UITextElements.DEVELOPING);
-      await this.componentVersionInformationPage.refreshPage();
-      await this.componentVersionInformationPage.checkFirstComboBox(UITextElements.DEVELOPING);
+    // 4. Выбрать любой статус кроме "Не указан" и "Не поддерживается"
+    await this.componentVersionInformationPage.clickOnElementWithText(UITextElements.DEVELOPING);
+    await this.componentVersionInformationPage.refreshPage();
+    await this.componentVersionInformationPage.checkFirstComboBox(UITextElements.DEVELOPING);
 
-      // 5. Выбрать любую другую версию компонента и вернуться обратно в первоначальную версию
-      await this.componentPage.clickOnTitle();
-      await this.componentPage.clickOnLink(UITextElements.ALL_COMPONENTS_TAB);
-      await this.componentPage.clickOnLink(Components.ACETAO);
+    // 5. Выбрать любую другую версию компонента и вернуться в первоначальную версию
+    await this.componentPage.clickOnTitle();
+    await this.componentPage.clickOnLink(UITextElements.ALL_COMPONENTS_TAB);
+    await this.componentPage.clickOnLink(Components.ACETAO);
 
-      await this.componentInformationPage.clickOnLink(UITextElements.VERSIONS_TAB);
-      await this.componentInformationPage.clickOnLink(Versions.VERSION_ACETAO);
+    await this.componentInformationPage.clickOnLink(UITextElements.VERSIONS_TAB);
+    await this.componentInformationPage.clickOnLink(Versions.VERSION_ACETAO);
 
-      await this.componentVersionInformationPage.clickOnTitle();
+    await this.componentVersionInformationPage.clickOnTitle();
 
-      await this.componentPage.clickOnLink(UITextElements.ALL_COMPONENTS_TAB);
-      await this.componentPage.clickOnLink(Components.ACCORDSDK);
+    await this.componentPage.clickOnLink(UITextElements.ALL_COMPONENTS_TAB);
+    await this.componentPage.clickOnLink(Components.ACCORDSDK);
 
-      await this.componentInformationPage.clickOnLink(UITextElements.VERSIONS_TAB);
-      await this.componentInformationPage.clickOnLink(Versions.VERSION_ACCORDSDK);
+    await this.componentInformationPage.clickOnLink(UITextElements.VERSIONS_TAB);
+    await this.componentInformationPage.clickOnLink(Versions.VERSION_ACCORDSDK);
 
-      await this.componentVersionInformationPage.checkFirstComboBox(UITextElements.DEVELOPING);
-    } finally {
-      await this.set_development_status();
-    }
+    await this.componentVersionInformationPage.checkFirstComboBox(UITextElements.DEVELOPING);
+
+    // Возвращение статуса разработки к первоначальному после автотеста.
+    await this.set_development_status();
   }
 
   /** Паспорт версии компонента, посмотреть сведения. */

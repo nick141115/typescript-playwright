@@ -263,45 +263,43 @@ export class TestProductRegistry extends BaseTest {
 
   /** Реестр продуктов, добавить продукт/версию/сборку в избранное. */
   public async testProductRegistryAddProductVersionBuildToFavorites(): Promise<void> {
-    try {
-      // 1. Пользователь с правами на чтение и редактирование паспортов продуктов авторизован в сервисе, открыта
-      // страница 'Продукты', вкладка 'Все продукты'
-      await this.impersonateAsUserWithReadOrWritePermissions(false);
-      await this.setup();
+    // 1. Пользователь с правами на чтение и редактирование паспортов продуктов авторизован в сервисе, открыта
+    // страница 'Продукты', вкладка 'Все продукты'
+    await this.impersonateAsUserWithReadOrWritePermissions(false);
+    await this.setup();
 
-      // 2. В реестре выбрать любой продукт (не добавленный в избранное) → нажать иконку в виде звезды
-      await this.productPage.clickOnFavoritesIconOff(Products.COORDINATOR_HW_5);
-      await this.productPage.checkText({ pageText: Products.COORDINATOR_HW_5 + UITextElements.ADDED_TO_FAVORITES });
-      await this.productPage.checkText({ pageText: RegularExpressions.PATTERN_STRING_TIME });
-      await this.productPage.clickOnCloseMessageIcon();
+    // 2. В реестре выбрать любой продукт (не добавленный в избранное) → нажать иконку в виде звезды
+    await this.productPage.clickOnFavoritesIconOff(Products.COORDINATOR_HW_5);
+    await this.productPage.checkText({ pageText: Products.COORDINATOR_HW_5 + UITextElements.ADDED_TO_FAVORITES });
+    await this.productPage.checkText({ pageText: RegularExpressions.PATTERN_STRING_TIME });
+    await this.productPage.clickOnCloseMessageIcon();
 
-      // 3. Перейти на вкладку 'Избранное' → проверить отображение выбранного продукта в избранном
-      await this.productPage.clickOnLink(UITextElements.FAVORITES);
-      await this.productPage.checkActiveTab(UITextElements.FAVORITES);
-      await this.productPage.checkLinksCount(Products.COORDINATOR_HW_5, 1);
-      await this.productPage.checkFavoritesIndicator(1);
+    // 3. Перейти на вкладку 'Избранное' → проверить отображение выбранного продукта в избранном
+    await this.productPage.clickOnLink(UITextElements.FAVORITES);
+    await this.productPage.checkActiveTab(UITextElements.FAVORITES);
+    await this.productPage.checkLinksCount(Products.COORDINATOR_HW_5, 1);
+    await this.productPage.checkFavoritesIndicator(1);
 
-      // 4. В реестре выбрать любой продукт → раскрыть экспандер → выбрать любую версию продукта (не добавленную в
-      // избранное) → нажать иконку в виде звезды
-      await this.productPage.clickOnLink(UITextElements.ALL_PRODUCTS);
-      await this.productPage.clickOnExpander(Products.COORDINATOR_HW_5);
-      await this.productPage.clickOnFavoritesIconOff(Versions.VERSION_COORDINATOR_HW_5);
-      await this.productPage.checkText({
-        pageText: Versions.VERSION_COORDINATOR_HW_5 + UITextElements.ADDED_TO_FAVORITES,
-      });
-      await this.productPage.checkText({ pageText: RegularExpressions.PATTERN_STRING_TIME });
-      await this.productPage.clickOnCloseMessageIcon();
+    // 4. В реестре выбрать любой продукт → раскрыть экспандер → выбрать любую версию продукта (не добавленную в
+    // избранное) → нажать иконку в виде звезды
+    await this.productPage.clickOnLink(UITextElements.ALL_PRODUCTS);
+    await this.productPage.clickOnExpander(Products.COORDINATOR_HW_5);
+    await this.productPage.clickOnFavoritesIconOff(Versions.VERSION_COORDINATOR_HW_5);
+    await this.productPage.checkText({
+      pageText: Versions.VERSION_COORDINATOR_HW_5 + UITextElements.ADDED_TO_FAVORITES,
+    });
+    await this.productPage.checkText({ pageText: RegularExpressions.PATTERN_STRING_TIME });
+    await this.productPage.clickOnCloseMessageIcon();
 
-      // Перейти на вкладку 'Избранное' → проверить отображение выбранной версии в избранном
-      await this.productPage.clickOnLink(UITextElements.FAVORITES);
-      await this.productPage.checkActiveTab(UITextElements.FAVORITES);
-      await this.productPage.checkLinksCount(Products.COORDINATOR_HW_5, 1);
-      await this.productPage.checkLinksCount(Versions.VERSION_COORDINATOR_HW_5, 1);
-      await this.productPage.checkFavoritesIndicator(2);
-    } finally {
-      // Очистка избранного после автотеста
-      await this.cleanupFavorites();
-    }
+    // Перейти на вкладку 'Избранное' → проверить отображение выбранной версии в избранном
+    await this.productPage.clickOnLink(UITextElements.FAVORITES);
+    await this.productPage.checkActiveTab(UITextElements.FAVORITES);
+    await this.productPage.checkLinksCount(Products.COORDINATOR_HW_5, 1);
+    await this.productPage.checkLinksCount(Versions.VERSION_COORDINATOR_HW_5, 1);
+    await this.productPage.checkFavoritesIndicator(2);
+
+    // Очистка избранного после автотеста
+    await this.cleanupFavorites();
   }
 
   /** Реестр продуктов, удалить продукт/версию/сборку из избранного. */

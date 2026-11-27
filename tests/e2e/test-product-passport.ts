@@ -582,148 +582,144 @@ export class TestProductPassport extends BaseTest {
 
   /** Паспорт объекта продукта, добавить в Избранное. */
   async testProductPassportAddToFavorites(): Promise<void> {
-    try {
-      // 1. Пользователь с правами на чтение и редактирование паспортов продуктов авторизован в сервисе, открыта
-      // страница 'Продукты'
-      await this.impersonateAsUserWithReadOrWritePermissions(false);
+    // 1. Пользователь с правами на чтение и редактирование паспортов продуктов авторизован в сервисе, открыта
+    // страница 'Продукты'
+    await this.impersonateAsUserWithReadOrWritePermissions(false);
 
-      await this.componentPage.clickOnLinkProducts();
+    await this.componentPage.clickOnLinkProducts();
 
-      // 2. В списке выбрать любой продукт не добавленный в избранное → открыть паспорт продукта → Нажать на индикатор
-      // избранного
-      await this.productPage.clickOnLink(UITextElements.ALL_PRODUCTS);
-      await this.productPage.clickOnLink(Products.COORDINATOR_HW_5);
-      await this.productPage.clickOnFavoritesIcon();
-      await this.productPage.checkText({ pageText: UITextElements.FAVORITES });
-      await this.productPage.checkText({ pageText: Products.COORDINATOR_HW_5 + UITextElements.ADDED_TO_FAVORITES });
-      await this.productPage.checkText({ pageText: RegularExpressions.PATTERN_STRING_TIME });
-      await this.productPage.clickOnCloseMessageIcon();
-      await this.productPage.checkFavoritesIconOn();
+    // 2. В списке выбрать любой продукт не добавленный в избранное → открыть паспорт продукта → Нажать на индикатор
+    // избранного
+    await this.productPage.clickOnLink(UITextElements.ALL_PRODUCTS);
+    await this.productPage.clickOnLink(Products.COORDINATOR_HW_5);
+    await this.productPage.clickOnFavoritesIcon();
+    await this.productPage.checkText({ pageText: UITextElements.FAVORITES });
+    await this.productPage.checkText({ pageText: Products.COORDINATOR_HW_5 + UITextElements.ADDED_TO_FAVORITES });
+    await this.productPage.checkText({ pageText: RegularExpressions.PATTERN_STRING_TIME });
+    await this.productPage.clickOnCloseMessageIcon();
+    await this.productPage.checkFavoritesIconOn();
 
-      // 3. Вернуться в реестр продуктов, выбрать любой продукт → раскрыть экспандер → выбрать любую версию продукта
-      // не добавленную в избранное → открыть паспорт версии продукта → Нажать на индикатор избранного
-      await this.productInformationPage.clickOnLinkProducts();
-      await this.productPage.clickOnLink(UITextElements.ALL_PRODUCTS);
-      await this.productPage.clickOnExpander(Products.COORDINATOR_HW_5);
-      await this.productPage.clickOnLink(Versions.VERSION_COORDINATOR_HW_5);
-      await this.productVersionInformationPage.clickOnFavoritesIcon();
-      await this.productVersionInformationPage.checkText({ pageText: UITextElements.FAVORITES });
-      await this.productVersionInformationPage.checkText({
-        pageText: Versions.VERSION_COORDINATOR_HW_5 + UITextElements.ADDED_TO_FAVORITES,
-      });
-      await this.productVersionInformationPage.checkText({ pageText: RegularExpressions.PATTERN_STRING_TIME });
-      await this.productVersionInformationPage.clickOnCloseMessageIcon();
-      await this.productVersionInformationPage.checkFavoritesIconOn();
+    // 3. Вернуться в реестр продуктов, выбрать любой продукт → раскрыть экспандер → выбрать любую версию продукта
+    // не добавленную в избранное → открыть паспорт версии продукта → Нажать на индикатор избранного
+    await this.productInformationPage.clickOnLinkProducts();
+    await this.productPage.clickOnLink(UITextElements.ALL_PRODUCTS);
+    await this.productPage.clickOnExpander(Products.COORDINATOR_HW_5);
+    await this.productPage.clickOnLink(Versions.VERSION_COORDINATOR_HW_5);
+    await this.productVersionInformationPage.clickOnFavoritesIcon();
+    await this.productVersionInformationPage.checkText({ pageText: UITextElements.FAVORITES });
+    await this.productVersionInformationPage.checkText({
+      pageText: Versions.VERSION_COORDINATOR_HW_5 + UITextElements.ADDED_TO_FAVORITES,
+    });
+    await this.productVersionInformationPage.checkText({ pageText: RegularExpressions.PATTERN_STRING_TIME });
+    await this.productVersionInformationPage.clickOnCloseMessageIcon();
+    await this.productVersionInformationPage.checkFavoritesIconOn();
 
-      // 4. Вернуться в реестр продуктов, выбрать любой продукт → раскрыть экспандер → выбрать любую версию продукта →
-      // раскрыть экспандер → выбрать любую сборку продукта не добавленную в избранное → открыть паспорт сборки
-      // продукта → Нажать на индикатор избранного
-      await this.productVersionInformationPage.clickOnLinkProducts();
-      await this.productPage.clickOnLink(UITextElements.ALL_PRODUCTS);
-      await this.productPage.clickOnExpander(Products.COORDINATOR_HW_5);
-      await this.productPage.clickOnExpander(Versions.VERSION_COORDINATOR_HW_5);
-      await this.productPage.clickOnLink(Assemblies.ASSEMBLY_COORDINATOR_HW_5);
-      await this.productAssemblyInformationPage.clickOnFavoritesIcon();
-      await this.productAssemblyInformationPage.checkText({ pageText: UITextElements.FAVORITES });
-      await this.productAssemblyInformationPage.checkText({
-        pageText: Assemblies.ASSEMBLY_COORDINATOR_HW_5 + UITextElements.ADDED_TO_FAVORITES,
-      });
-      await this.productAssemblyInformationPage.checkText({ pageText: RegularExpressions.PATTERN_STRING_TIME });
-      await this.productAssemblyInformationPage.clickOnCloseMessageIcon();
-      await this.productAssemblyInformationPage.checkFavoritesIconOn();
+    // 4. Вернуться в реестр продуктов, выбрать любой продукт → раскрыть экспандер → выбрать любую версию продукта →
+    // раскрыть экспандер → выбрать любую сборку продукта не добавленную в избранное → открыть паспорт сборки
+    // продукта → Нажать на индикатор избранного
+    await this.productVersionInformationPage.clickOnLinkProducts();
+    await this.productPage.clickOnLink(UITextElements.ALL_PRODUCTS);
+    await this.productPage.clickOnExpander(Products.COORDINATOR_HW_5);
+    await this.productPage.clickOnExpander(Versions.VERSION_COORDINATOR_HW_5);
+    await this.productPage.clickOnLink(Assemblies.ASSEMBLY_COORDINATOR_HW_5);
+    await this.productAssemblyInformationPage.clickOnFavoritesIcon();
+    await this.productAssemblyInformationPage.checkText({ pageText: UITextElements.FAVORITES });
+    await this.productAssemblyInformationPage.checkText({
+      pageText: Assemblies.ASSEMBLY_COORDINATOR_HW_5 + UITextElements.ADDED_TO_FAVORITES,
+    });
+    await this.productAssemblyInformationPage.checkText({ pageText: RegularExpressions.PATTERN_STRING_TIME });
+    await this.productAssemblyInformationPage.clickOnCloseMessageIcon();
+    await this.productAssemblyInformationPage.checkFavoritesIconOn();
 
-      // 5. Вернуться в реестр продуктов → для продукта из ш2, версии продукта из ш3, сборки продукта из ш4 проверить
-      // отображение индикатора избранного
-      await this.productAssemblyInformationPage.clickOnLinkProducts();
-      await this.productPage.clickOnLink(UITextElements.ALL_PRODUCTS);
-      await this.productPage.clickOnExpander(Products.COORDINATOR_HW_5);
-      await this.productPage.clickOnExpander(Versions.VERSION_COORDINATOR_HW_5);
-      await this.productPage.checkCountFavoritesIndicatorOn(3);
+    // 5. Вернуться в реестр продуктов → для продукта из ш2, версии продукта из ш3, сборки продукта из ш4 проверить
+    // отображение индикатора избранного
+    await this.productAssemblyInformationPage.clickOnLinkProducts();
+    await this.productPage.clickOnLink(UITextElements.ALL_PRODUCTS);
+    await this.productPage.clickOnExpander(Products.COORDINATOR_HW_5);
+    await this.productPage.clickOnExpander(Versions.VERSION_COORDINATOR_HW_5);
+    await this.productPage.checkCountFavoritesIndicatorOn(3);
 
-      // 6. Перейти на вкладку 'Избранное'
-      await this.productPage.clickOnLinkProducts();
-      await this.productPage.clickOnFavoritesIconOn(Assemblies.ASSEMBLY_COORDINATOR_HW_5);
-      await this.productPage.checkText({
-        pageText: Assemblies.ASSEMBLY_COORDINATOR_HW_5 + UITextElements.DELETED_FROM_FAVORITES,
-      });
-      await this.productPage.checkText({ pageText: RegularExpressions.PATTERN_STRING_TIME });
-      await this.productPage.clickOnCloseMessageIcon();
-      await this.productPage.clickOnFavoritesIconOn(Products.COORDINATOR_HW_5);
-      await this.productPage.checkText({ pageText: Products.COORDINATOR_HW_5 + UITextElements.DELETED_FROM_FAVORITES });
-      await this.productPage.checkText({ pageText: RegularExpressions.PATTERN_STRING_TIME });
-      await this.productPage.clickOnCloseMessageIcon();
-      await this.productPage.clickOnFavoritesIconOn(Versions.VERSION_COORDINATOR_HW_5);
-      await this.productPage.checkText({
-        pageText: Versions.VERSION_COORDINATOR_HW_5 + UITextElements.DELETED_FROM_FAVORITES,
-      });
-      await this.productPage.checkText({ pageText: RegularExpressions.PATTERN_STRING_TIME });
-      await this.productPage.clickOnCloseMessageIcon();
-    } finally {
-      // Очистка избранного после автотеста
-      await this.cleanupFavorites();
-    }
+    // 6. Перейти на вкладку 'Избранное'
+    await this.productPage.clickOnLinkProducts();
+    await this.productPage.clickOnFavoritesIconOn(Assemblies.ASSEMBLY_COORDINATOR_HW_5);
+    await this.productPage.checkText({
+      pageText: Assemblies.ASSEMBLY_COORDINATOR_HW_5 + UITextElements.DELETED_FROM_FAVORITES,
+    });
+    await this.productPage.checkText({ pageText: RegularExpressions.PATTERN_STRING_TIME });
+    await this.productPage.clickOnCloseMessageIcon();
+    await this.productPage.clickOnFavoritesIconOn(Products.COORDINATOR_HW_5);
+    await this.productPage.checkText({ pageText: Products.COORDINATOR_HW_5 + UITextElements.DELETED_FROM_FAVORITES });
+    await this.productPage.checkText({ pageText: RegularExpressions.PATTERN_STRING_TIME });
+    await this.productPage.clickOnCloseMessageIcon();
+    await this.productPage.clickOnFavoritesIconOn(Versions.VERSION_COORDINATOR_HW_5);
+    await this.productPage.checkText({
+      pageText: Versions.VERSION_COORDINATOR_HW_5 + UITextElements.DELETED_FROM_FAVORITES,
+    });
+    await this.productPage.checkText({ pageText: RegularExpressions.PATTERN_STRING_TIME });
+    await this.productPage.clickOnCloseMessageIcon();
+
+    // Очистка избранного после автотеста
+    await this.cleanupFavorites();
   }
 
   /** Паспорт продукта, согласование отклонения от техрадара. */
   async testProductPassportApprovalOfDeviationsFromTechnicalRadar(): Promise<void> {
     const comment: string = "a".repeat(1000);
 
-    try {
-      // 1. Пользователь с правами на чтение и редактирование паспортов продуктов авторизован в сервисе, открыт
-      // паспорт продукта на вкладке 'Компонентный состав'
-      await this.componentPage.clickOnLinkProducts();
-      await this.productPage.clickOnLink(UITextElements.ALL_PRODUCTS);
-      await this.productPage.clickOnLink(Products.COORDINATOR_HW_5);
-      await this.productInformationPage.clickOnLink(UITextElements.COMPONENT_COMPOSITION);
+    // 1. Пользователь с правами на чтение и редактирование паспортов продуктов авторизован в сервисе, открыт
+    // паспорт продукта на вкладке 'Компонентный состав'
+    await this.componentPage.clickOnLinkProducts();
+    await this.productPage.clickOnLink(UITextElements.ALL_PRODUCTS);
+    await this.productPage.clickOnLink(Products.COORDINATOR_HW_5);
+    await this.productInformationPage.clickOnLink(UITextElements.COMPONENT_COMPOSITION);
 
-      // 2. Нажать 'Редактировать'
-      await this.productInformationPage.clickOnElementWithText(UITextElements.EDIT);
-      await this.productInformationPage.checkText({ pageText: UITextElements.EDIT, visible: false });
-      await this.productInformationPage.checkVisibilityCancelEditingButton();
+    // 2. Нажать 'Редактировать'
+    await this.productInformationPage.clickOnElementWithText(UITextElements.EDIT);
+    await this.productInformationPage.checkText({ pageText: UITextElements.EDIT, visible: false });
+    await this.productInformationPage.checkVisibilityCancelEditingButton();
 
-      // 3. В списке выбрать любой несогласованный компонент с зоной техрадара 'Неизвестна' → отметить чек-бокс
-      // 'Согласование' галкой
-      await this.productInformationPage.clickOnFunnelIcon();
-      await this.productInformationPage.clickOnComboBoxInFilter(UITextElements.APPROVAL_STATUS);
-      await this.productInformationPage.clickOnElementWithText(AgreementValues.CHOICE_IS_NOT_AGREED_UPON);
-      await this.productInformationPage.clickOnComboBoxInFilter(UITextElements.TECHNICAL_RADAR_AREA);
-      await this.productInformationPage.clickOnElementWithText(RadarAreaValues.RADAR_AREA_IS_UNKNOWN);
-      await this.productInformationPage.clickOnElementWithText(UITextElements.AGREEMENT, 1);
-      await this.productInformationPage.fillInTextareaJustificationComment("");
-      await this.productInformationPage.checkText({ pageText: "Поле с обоснованием не заполнено" });
-      await this.productInformationPage.checkCheckboxWithTextInComboBoxInFilter(UITextElements.AGREEMENT);
-      await this.productInformationPage.checkVisibilityTextareaJustificationComment();
-      await this.productInformationPage.checkRedBacklightForTextarea();
-      await this.productInformationPage.checkTextInTextareaJustificationComment("");
+    // 3. В списке выбрать любой несогласованный компонент с зоной техрадара 'Неизвестна' → отметить чек-бокс
+    // 'Согласование' галкой
+    await this.productInformationPage.clickOnFunnelIcon();
+    await this.productInformationPage.clickOnComboBoxInFilter(UITextElements.APPROVAL_STATUS);
+    await this.productInformationPage.clickOnElementWithText(AgreementValues.CHOICE_IS_NOT_AGREED_UPON);
+    await this.productInformationPage.clickOnComboBoxInFilter(UITextElements.TECHNICAL_RADAR_AREA);
+    await this.productInformationPage.clickOnElementWithText(RadarAreaValues.RADAR_AREA_IS_UNKNOWN);
+    await this.productInformationPage.clickOnElementWithText(UITextElements.AGREEMENT, 1);
+    await this.productInformationPage.fillInTextareaJustificationComment("");
+    await this.productInformationPage.checkText({ pageText: "Поле с обоснованием не заполнено" });
+    await this.productInformationPage.checkCheckboxWithTextInComboBoxInFilter(UITextElements.AGREEMENT);
+    await this.productInformationPage.checkVisibilityTextareaJustificationComment();
+    await this.productInformationPage.checkRedBacklightForTextarea();
+    await this.productInformationPage.checkTextInTextareaJustificationComment("");
 
-      // 4. Нажать 'Сохранить'
-      await this.productInformationPage.clickOnIconFloppyDisk();
-      await this.productInformationPage.checkText({ pageText: UITextElements.QUESTION, visible: false });
+    // 4. Нажать 'Сохранить'
+    await this.productInformationPage.clickOnIconFloppyDisk();
+    await this.productInformationPage.checkText({ pageText: UITextElements.QUESTION, visible: false });
 
-      // 5. В поле 'Обоснование/Комментарий' добавить валидный комментарий до 1000 символов (включительно)
-      await this.productInformationPage.fillInTextareaJustificationComment(comment);
-      await this.productInformationPage.checkTextInTextareaJustificationComment(comment);
-      await this.productInformationPage.checkAttributesInTextareaJustificationComment();
+    // 5. В поле 'Обоснование/Комментарий' добавить валидный комментарий до 1000 символов (включительно)
+    await this.productInformationPage.fillInTextareaJustificationComment(comment);
+    await this.productInformationPage.checkTextInTextareaJustificationComment(comment);
+    await this.productInformationPage.checkAttributesInTextareaJustificationComment();
 
-      // 6. Нажать 'Сохранить'
-      await this.productInformationPage.clickOnIconFloppyDisk();
-      await this.productInformationPage.checkText({ pageText: UITextElements.QUESTION });
-      await this.productInformationPage.checkText({ pageText: UITextElements.NO });
-      await this.productInformationPage.checkTitleModal();
+    // 6. Нажать 'Сохранить'
+    await this.productInformationPage.clickOnIconFloppyDisk();
+    await this.productInformationPage.checkText({ pageText: UITextElements.QUESTION });
+    await this.productInformationPage.checkText({ pageText: UITextElements.NO });
+    await this.productInformationPage.checkTitleModal();
 
-      // 7. Нажать 'Да'
-      await this.productInformationPage.clickOnElementWithText(UITextElements.YES);
-      await this.productInformationPage.checkText({ pageText: TestProductPassport.APPROVAL_CHANGED_SUCCESSFULLY });
-      await this.productInformationPage.checkText({ pageText: RegularExpressions.PATTERN_STRING_TIME });
-      await this.productInformationPage.checkVisibilityCloseMessageIcon();
-      await this.productInformationPage.checkText({
-        pageText: TestProductPassport.APPROVAL_CHANGED_SUCCESSFULLY,
-        visible: false,
-        timeout: 6000,
-      });
-    } finally {
-      // Очистка комментария и checkbox'а
-      await this.clearCommentAndCheckbox();
-    }
+    // 7. Нажать 'Да'
+    await this.productInformationPage.clickOnElementWithText(UITextElements.YES);
+    await this.productInformationPage.checkText({ pageText: TestProductPassport.APPROVAL_CHANGED_SUCCESSFULLY });
+    await this.productInformationPage.checkText({ pageText: RegularExpressions.PATTERN_STRING_TIME });
+    await this.productInformationPage.checkVisibilityCloseMessageIcon();
+    await this.productInformationPage.checkText({
+      pageText: TestProductPassport.APPROVAL_CHANGED_SUCCESSFULLY,
+      visible: false,
+      timeout: 6000,
+    });
+
+    // Очистка комментария и checkbox'а
+    await this.clearCommentAndCheckbox();
   }
 }

@@ -6,7 +6,8 @@ import * as allure from "allure-js-commons";
 
 /** Тип компонента. */
 export class TestComponentType extends BaseTest {
-  /** Возвращение типа компонента к первоначальному после автотеста.
+  /**
+   * Возвращение типа компонента к первоначальному после автотеста.
    *
    * @param component Название компонента.
    * @param value Тип компонента.
@@ -29,138 +30,131 @@ export class TestComponentType extends BaseTest {
   async testSetComponentType(): Promise<void> {
     await allure.description(`Баг: при выборе значения в combobox'е иногда значение не сохраняется.`);
 
-    try {
-      // 1. Предусловие: Пользователь с правами редактирования паспортов компонентов авторизован в сервисе,
-      // открыта страница "Компоненты"
-      await this.componentPage.clickOnLink(UITextElements.ALL_COMPONENTS_TAB);
+    // 1. Предусловие: Пользователь с правами редактирования паспортов компонентов авторизован в сервисе,
+    // открыта страница "Компоненты"
+    await this.componentPage.clickOnLink(UITextElements.ALL_COMPONENTS_TAB);
 
-      // 2. В списке выбрать компонент, у которого не задан тип → проверить информацию в поле "Тип компонента"
-      await this.componentPage.clickOnLink(Components.ACCORDSDK);
+    // 2. В списке выбрать компонент, у которого не задан тип → проверить информацию в поле "Тип компонента"
+    await this.componentPage.clickOnLink(Components.ACCORDSDK);
 
-      await this.componentInformationPage.checkFirstComboBox(UITextElements.ABSENT);
+    await this.componentInformationPage.checkFirstComboBox(UITextElements.ABSENT);
 
-      // 3. Кликнуть в поле "Тип"
-      const elements: string[] = [UITextElements.ABSENT, UITextElements.INTERNAL, UITextElements.EXTERNAL];
+    // 3. Кликнуть в поле "Тип"
+    const elements: string[] = [UITextElements.ABSENT, UITextElements.INTERNAL, UITextElements.EXTERNAL];
 
-      await this.componentInformationPage.clickOnFirstComboBox();
-      await this.componentInformationPage.checkElementsInComboBoxComponentType(elements);
+    await this.componentInformationPage.clickOnFirstComboBox();
+    await this.componentInformationPage.checkElementsInComboBoxComponentType(elements);
 
-      // 4. Выбрать один из вариантов, за исключением "Не указан"
-      await this.componentInformationPage.clickOnElementWithText(UITextElements.EXTERNAL);
-      await this.componentInformationPage.refreshPage();
-      await this.componentInformationPage.checkFirstComboBox(UITextElements.EXTERNAL);
+    // 4. Выбрать один из вариантов, за исключением "Не указан"
+    await this.componentInformationPage.clickOnElementWithText(UITextElements.EXTERNAL);
+    await this.componentInformationPage.refreshPage();
+    await this.componentInformationPage.checkFirstComboBox(UITextElements.EXTERNAL);
 
-      // 5. В списке компонентов выбрать любой другой компонент → далее вернуться к компоненту из ш. 2
-      await this.componentInformationPage.clickOnTitle();
+    // 5. В списке компонентов выбрать любой другой компонент → далее вернуться к компоненту из ш. 2
+    await this.componentInformationPage.clickOnTitle();
 
-      await this.componentPage.clickOnLink(UITextElements.ALL_COMPONENTS_TAB);
-      await this.componentPage.clickOnLink(Components.ACETAO);
+    await this.componentPage.clickOnLink(UITextElements.ALL_COMPONENTS_TAB);
+    await this.componentPage.clickOnLink(Components.ACETAO);
 
-      await this.componentInformationPage.clickOnTitle();
+    await this.componentInformationPage.clickOnTitle();
 
-      await this.componentPage.clickOnLink(UITextElements.ALL_COMPONENTS_TAB);
-      await this.componentPage.clickOnLink(Components.ACCORDSDK);
+    await this.componentPage.clickOnLink(UITextElements.ALL_COMPONENTS_TAB);
+    await this.componentPage.clickOnLink(Components.ACCORDSDK);
 
-      await this.componentInformationPage.checkFirstComboBox(UITextElements.EXTERNAL);
+    await this.componentInformationPage.checkFirstComboBox(UITextElements.EXTERNAL);
 
-      // 6. Войти в сервис под пользователем с правами на чтение по компоненту из ш. 2 → проверить отображение
-      // типа компонента
-      await this.impersonateAsUserWithReadOrWritePermissions(false);
+    // 6. Войти в сервис под пользователем с правами на чтение по компоненту из ш. 2 → проверить отображение
+    // типа компонента
+    await this.impersonateAsUserWithReadOrWritePermissions(false);
 
-      await this.componentPage.clickOnTitle();
-      await this.componentPage.clickOnLink(UITextElements.ALL_COMPONENTS_TAB);
-      await this.componentPage.clickOnLink(Components.ACCORDSDK);
+    await this.componentPage.clickOnTitle();
+    await this.componentPage.clickOnLink(UITextElements.ALL_COMPONENTS_TAB);
+    await this.componentPage.clickOnLink(Components.ACCORDSDK);
 
-      await this.componentInformationPage.checkComponentTypeText(UITextElements.EXTERNAL);
-    } finally {
-      // Возвращение типа компонента к первоначальному после автотеста.
-      await this.setComponentType(Components.ACCORDSDK, UITextElements.ABSENT);
-    }
+    await this.componentInformationPage.checkComponentTypeText(UITextElements.EXTERNAL);
+
+    // Возвращение типа компонента к первоначальному после автотеста.
+    await this.setComponentType(Components.ACCORDSDK, UITextElements.ABSENT);
   }
 
   /** Удалить тип компонента. */
   async testDeleteComponentType(): Promise<void> {
     await allure.description(`Баг: при выборе значения в combobox'е иногда значение не сохраняется.`);
+    // 1. Предусловие: Пользователь с правами редактирования паспортов компонентов авторизован в сервисе,
+    // открыта страница "Компоненты"
+    await this.componentPage.clickOnLink(UITextElements.ALL_COMPONENTS_TAB);
 
-    try {
-      // 1. Предусловие: Пользователь с правами редактирования паспортов компонентов авторизован в сервисе,
-      // открыта страница "Компоненты"
-      await this.componentPage.clickOnLink(UITextElements.ALL_COMPONENTS_TAB);
+    // 2. В списке компонентов выбрать компонент с заданным типом
+    await this.componentPage.fillInSearchInput(Components.ADDRESSBOOK);
+    await this.componentPage.clickOnLink(Components.ADDRESSBOOK);
 
-      // 2. В списке компонентов выбрать компонент с заданным типом
-      await this.componentPage.fillInSearchInput(Components.ADDRESSBOOK);
-      await this.componentPage.clickOnLink(Components.ADDRESSBOOK);
+    await this.componentInformationPage.checkFirstComboBox(UITextElements.INTERNAL);
 
-      await this.componentInformationPage.checkFirstComboBox(UITextElements.INTERNAL);
+    // 3. В поле "Тип" выбрать значение "Не указан"
+    await this.componentInformationPage.clickOnFirstComboBox();
+    await this.componentInformationPage.clickOnElementWithText(UITextElements.ABSENT);
+    await this.componentInformationPage.refreshPage();
+    await this.componentInformationPage.checkFirstComboBox(UITextElements.ABSENT);
 
-      // 3. В поле "Тип" выбрать значение "Не указан"
-      await this.componentInformationPage.clickOnFirstComboBox();
-      await this.componentInformationPage.clickOnElementWithText(UITextElements.ABSENT);
-      await this.componentInformationPage.refreshPage();
-      await this.componentInformationPage.checkFirstComboBox(UITextElements.ABSENT);
+    // Пользователь с правами на чтение
+    await this.impersonateAsUserWithReadOrWritePermissions(false);
 
-      // Пользователь с правами на чтение
-      await this.impersonateAsUserWithReadOrWritePermissions(false);
+    await this.componentPage.clickOnTitle();
+    await this.componentPage.clickOnLink(UITextElements.ALL_COMPONENTS_TAB);
+    await this.componentPage.fillInSearchInput(Components.ADDRESSBOOK);
+    await this.componentPage.clickOnLink(Components.ADDRESSBOOK);
 
-      await this.componentPage.clickOnTitle();
-      await this.componentPage.clickOnLink(UITextElements.ALL_COMPONENTS_TAB);
-      await this.componentPage.fillInSearchInput(Components.ADDRESSBOOK);
-      await this.componentPage.clickOnLink(Components.ADDRESSBOOK);
+    await this.componentInformationPage.checkComponentTypeText(UITextElements.DASH);
 
-      await this.componentInformationPage.checkComponentTypeText(UITextElements.DASH);
-    } finally {
-      // Возвращение типа компонента к первоначальному после автотеста.
-      await this.setComponentType(Components.ADDRESSBOOK, UITextElements.INTERNAL);
-    }
+    // Возвращение типа компонента к первоначальному после автотеста.
+    await this.setComponentType(Components.ADDRESSBOOK, UITextElements.INTERNAL);
   }
 
   /** Изменить тип компонента. */
   async testChangeComponentType(): Promise<void> {
     await allure.description(`Баг: при выборе значения в combobox'е иногда значение не сохраняется.`);
 
-    try {
-      // 1. Предусловие: Пользователь с правами редактирования паспортов компонентов авторизован в сервисе,
-      // открыта страница "Компоненты"
-      await this.componentPage.clickOnLink(UITextElements.ALL_COMPONENTS_TAB);
+    // 1. Предусловие: Пользователь с правами редактирования паспортов компонентов авторизован в сервисе,
+    // открыта страница "Компоненты"
+    await this.componentPage.clickOnLink(UITextElements.ALL_COMPONENTS_TAB);
 
-      // 2. В списке компонентов выбрать компонент с заданным типом
-      await this.componentPage.fillInSearchInput(Components.ADDRESSBOOK);
-      await this.componentPage.clickOnLink(Components.ADDRESSBOOK);
+    // 2. В списке компонентов выбрать компонент с заданным типом
+    await this.componentPage.fillInSearchInput(Components.ADDRESSBOOK);
+    await this.componentPage.clickOnLink(Components.ADDRESSBOOK);
 
-      await this.componentInformationPage.checkFirstComboBox(UITextElements.INTERNAL);
+    await this.componentInformationPage.checkFirstComboBox(UITextElements.INTERNAL);
 
-      // 3. Изменить тип компонента (в выпадающем списке выбрать другое значение)
-      await this.componentInformationPage.clickOnFirstComboBox();
-      await this.componentInformationPage.clickOnElementWithText(UITextElements.EXTERNAL);
-      await this.componentInformationPage.refreshPage();
-      await this.componentInformationPage.checkFirstComboBox(UITextElements.EXTERNAL);
+    // 3. Изменить тип компонента (в выпадающем списке выбрать другое значение)
+    await this.componentInformationPage.clickOnFirstComboBox();
+    await this.componentInformationPage.clickOnElementWithText(UITextElements.EXTERNAL);
+    await this.componentInformationPage.refreshPage();
+    await this.componentInformationPage.checkFirstComboBox(UITextElements.EXTERNAL);
 
-      // 4. В списке компонентов выбрать любой другой компонент → далее вернуться к компоненту из ш. 2
-      await this.componentInformationPage.clickOnTitle();
+    // 4. В списке компонентов выбрать любой другой компонент → далее вернуться к компоненту из ш. 2
+    await this.componentInformationPage.clickOnTitle();
 
-      await this.componentPage.clickOnLink(UITextElements.ALL_COMPONENTS_TAB);
-      await this.componentPage.clickOnLink(Components.ACETAO);
+    await this.componentPage.clickOnLink(UITextElements.ALL_COMPONENTS_TAB);
+    await this.componentPage.clickOnLink(Components.ACETAO);
 
-      await this.componentInformationPage.clickOnTitle();
+    await this.componentInformationPage.clickOnTitle();
 
-      await this.componentPage.clickOnLink(UITextElements.ALL_COMPONENTS_TAB);
-      await this.componentPage.clickOnLink(Components.ADDRESSBOOK);
+    await this.componentPage.clickOnLink(UITextElements.ALL_COMPONENTS_TAB);
+    await this.componentPage.clickOnLink(Components.ADDRESSBOOK);
 
-      await this.componentInformationPage.checkFirstComboBox(UITextElements.EXTERNAL);
+    await this.componentInformationPage.checkFirstComboBox(UITextElements.EXTERNAL);
 
-      // 5. Войти в сервис под пользователем с правами на чтение по компоненту из ш. 2 → проверить отображение
-      // типа компонента
-      await this.impersonateAsUserWithReadOrWritePermissions(false);
+    // 5. Войти в сервис под пользователем с правами на чтение по компоненту из ш. 2 → проверить отображение
+    // типа компонента
+    await this.impersonateAsUserWithReadOrWritePermissions(false);
 
-      await this.componentPage.clickOnTitle();
-      await this.componentPage.clickOnLink(UITextElements.ALL_COMPONENTS_TAB);
-      await this.componentPage.clickOnLink(Components.ADDRESSBOOK);
+    await this.componentPage.clickOnTitle();
+    await this.componentPage.clickOnLink(UITextElements.ALL_COMPONENTS_TAB);
+    await this.componentPage.clickOnLink(Components.ADDRESSBOOK);
 
-      await this.componentInformationPage.checkComponentTypeText(UITextElements.EXTERNAL);
-    } finally {
-      // Возвращение типа компонента к первоначальному после автотеста.
-      await this.setComponentType(Components.ADDRESSBOOK, UITextElements.INTERNAL);
-    }
+    await this.componentInformationPage.checkComponentTypeText(UITextElements.EXTERNAL);
+
+    // Возвращение типа компонента к первоначальному после автотеста.
+    await this.setComponentType(Components.ADDRESSBOOK, UITextElements.INTERNAL);
   }
 
   /** Тип компонента, значение по умолчанию. */

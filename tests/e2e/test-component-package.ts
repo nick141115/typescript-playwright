@@ -14,7 +14,7 @@ export class TestComponentPackage extends BaseTest {
   private static readonly TEXT_PACKAGE: string = "Пакет 1.0.0.14";
   private static readonly RUBY: string = "Ruby";
   private static readonly C_SHARP: string = "C#";
-  private static readonly YA_RU: string = "http://ya.ru/";
+  private static readonly YA_RU: string = "https://ya.ru/";
   private static readonly LINK_REMOVED: string = "Ссылка удалена.";
   private static readonly SOURCE_CODE_IS_EXTERNAL: string = "Исходный код внешний";
   private static readonly SOURCE_CODE_IS_INTERNAL: string = "Исходный код внутренний";
@@ -210,39 +210,36 @@ export class TestComponentPackage extends BaseTest {
   public async testComponentPackageAddProgrammingLanguage(): Promise<void> {
     await allure.description(`Баг: при добавлении ЯП иногда удаляются все ЯП из списка вместо добавления.`);
 
-    try {
-      // 1. Предусловие: Пользователь с правами на редактирование паспортов компонентов авторизован в сервисе. Открыт
-      // паспорт пакета компонента, есть ссылка на исходный код
-      await this.setup();
+    // 1. Предусловие: Пользователь с правами на редактирование паспортов компонентов авторизован в сервисе. Открыт
+    // паспорт пакета компонента, есть ссылка на исходный код
+    await this.setup();
 
-      // 2. В поле 'Язык программирования' ввести часть названия ЯП
-      await this.componentPackageInformationPage.fillInChipsInput("C");
+    // 2. В поле 'Язык программирования' ввести часть названия ЯП
+    await this.componentPackageInformationPage.fillInChipsInput("C");
 
-      // 3. Выбрать любой ЯП из списка
-      await this.componentPackageInformationPage.clickOnElementWithText(TestComponentPackage.C_SHARP);
+    // 3. Выбрать любой ЯП из списка
+    await this.componentPackageInformationPage.clickOnElementWithText(TestComponentPackage.C_SHARP);
 
-      // 4. Повторить шаги 2 и 3 для добавления нескольких ЯП
-      await this.componentPackageInformationPage.fillInChipsInput("ru");
-      await this.componentPackageInformationPage.clickOnElementWithText(TestComponentPackage.RUBY);
-      await this.componentPackageInformationPage.checkTitlesCount("Удалить из списка", 7);
-      await this.componentPackageInformationPage.checkTextInChipsInput(
-        "Bourne ShellCC/C++ HeaderDOS BatchPythonC#RubyНачните вводить и выберите из списка",
-      );
+    // 4. Повторить шаги 2 и 3 для добавления нескольких ЯП
+    await this.componentPackageInformationPage.fillInChipsInput("ru");
+    await this.componentPackageInformationPage.clickOnElementWithText(TestComponentPackage.RUBY);
+    await this.componentPackageInformationPage.checkTitlesCount("Удалить из списка", 7);
+    await this.componentPackageInformationPage.checkTextInChipsInput(
+      "Bourne ShellCC/C++ HeaderDOS BatchPythonC#RubyНачните вводить и выберите из списка",
+    );
 
-      // 5. Обновить страницу сервиса
-      await this.componentPackageInformationPage.refreshPage();
-      await this.componentPackageInformationPage.checkTextInChipsInput(
-        "Bourne ShellCC#C/C++ HeaderDOS BatchPythonRubyНачните вводить и выберите из списка",
-      );
-    } finally {
-      // Удаление языков программирования после автотеста.
-      await this.deleteProgrammingLanguages([TestComponentPackage.C_SHARP, TestComponentPackage.RUBY]);
-    }
+    // 5. Обновить страницу сервиса
+    await this.componentPackageInformationPage.refreshPage();
+    await this.componentPackageInformationPage.checkTextInChipsInput(
+      "Bourne ShellCC#C/C++ HeaderDOS BatchPythonRubyНачните вводить и выберите из списка",
+    );
+
+    // Удаление языков программирования после автотеста.
+    await this.deleteProgrammingLanguages([TestComponentPackage.C_SHARP, TestComponentPackage.RUBY]);
   }
 
   /** Паспорт пакета компонента, удалить ручную ссылку на исходный код, подтвердить удаление. */
   public async testComponentPackageRemoveManualSourceCodeLinkConfirmDeletion(): Promise<void> {
-    // TODO когда сервис станет работать стабильно добавить фикстуру проверки удаления ссылки после теста
     // 1. Пользователь с правами на редактирование паспортов компонентов и продуктов авторизован в сервисе. Открыт
     // паспорт пакета компонента, ссылка на внешний исходный код введена вручную
     await this.componentPage.clickOnLink(UITextElements.ALL_COMPONENTS_TAB);
@@ -282,107 +279,104 @@ export class TestComponentPackage extends BaseTest {
 
   /** Паспорт пакета компонента, ручной ввод ссылки на исходный код. */
   public async testComponentPackageManuallyEnteringLinkToSourceCode(): Promise<void> {
-    try {
-      // 1. Пользователь с правами на редактирование паспортов компонентов и продуктов авторизован в сервисе. Открыт
-      // паспорт пакета компонента, ссылка на внешний исходный код отсутствует
-      await this.componentPage.clickOnLink(UITextElements.ALL_COMPONENTS_TAB);
-      await this.componentPage.clickOnLink(Components.ACETAO);
+    // 1. Пользователь с правами на редактирование паспортов компонентов и продуктов авторизован в сервисе. Открыт
+    // паспорт пакета компонента, ссылка на внешний исходный код отсутствует
+    await this.componentPage.clickOnLink(UITextElements.ALL_COMPONENTS_TAB);
+    await this.componentPage.clickOnLink(Components.ACETAO);
 
-      await this.componentInformationPage.clickOnLink(UITextElements.VERSIONS_TAB);
-      await this.componentInformationPage.clickOnLink(TestComponentPackage.SIX_POINT_TWO);
+    await this.componentInformationPage.clickOnLink(UITextElements.VERSIONS_TAB);
+    await this.componentInformationPage.clickOnLink(TestComponentPackage.SIX_POINT_TWO);
 
-      await this.productVersionInformationPage.clickOnLink(UITextElements.PACKAGES_TAB);
-      await this.productVersionInformationPage.clickOnLink(TestComponentPackage.PACKAGE_NUMBER_ACETAO);
+    await this.productVersionInformationPage.clickOnLink(UITextElements.PACKAGES_TAB);
+    await this.productVersionInformationPage.clickOnLink(TestComponentPackage.PACKAGE_NUMBER_ACETAO);
 
-      // 2. Нажать на иконку в виде плюса в кружочке
-      await this.componentPackageInformationPage.clickOnIconPlusInCircle(1);
-      await this.componentPackageInformationPage.checkButtonCancel();
+    // 2. Нажать на иконку в виде плюса в кружочке
+    await this.componentPackageInformationPage.clickOnIconPlusInCircle(1);
+    await this.componentPackageInformationPage.checkButtonCancel();
 
-      // 3. Ввести валидную ссылку на внешний репозиторий
-      await this.componentPackageInformationPage.fillInInputUrl(TestComponentPackage.YA_RU);
-      await this.componentPackageInformationPage.checkTextInInputUrl(TestComponentPackage.YA_RU);
+    // 3. Ввести валидную ссылку на внешний репозиторий
+    await this.componentPackageInformationPage.fillInInputUrl(TestComponentPackage.YA_RU);
+    await this.componentPackageInformationPage.checkTextInInputUrl(TestComponentPackage.YA_RU);
 
-      // 4. Нажать 'Сохранить'
-      await this.componentPackageInformationPage.clickOnIconFloppyDisk();
-      await this.componentPackageInformationPage.checkText({ pageText: TestComponentPackage.LINK_SAVED });
-      await this.componentPackageInformationPage.clickOnCloseMessageIcon();
-      await this.componentPackageInformationPage.checkText({ pageText: TestComponentPackage.SOURCE_CODE_IS_EXTERNAL });
-      await this.componentPackageInformationPage.checkHref(
-        TestComponentPackage.SOURCE_CODE_IS_EXTERNAL,
-        TestComponentPackage.YA_RU,
-        false,
-      );
+    // 4. Нажать 'Сохранить'
+    await this.componentPackageInformationPage.clickOnIconFloppyDisk();
+    await this.componentPackageInformationPage.checkText({ pageText: TestComponentPackage.LINK_SAVED });
+    await this.componentPackageInformationPage.clickOnCloseMessageIcon();
+    await this.componentPackageInformationPage.checkText({ pageText: TestComponentPackage.SOURCE_CODE_IS_EXTERNAL });
+    await this.componentPackageInformationPage.checkHref(
+      TestComponentPackage.SOURCE_CODE_IS_EXTERNAL,
+      TestComponentPackage.YA_RU,
+      false,
+    );
 
-      // 5. Повторить шаги тест-кейса для внутренней ссылки.
-      // Нажать на иконку в виде плюса в кружочке.
-      await this.componentPackageInformationPage.clickOnIconPlusInCircle();
-      await this.componentPackageInformationPage.checkButtonCancel();
+    // 5. Повторить шаги тест-кейса для внутренней ссылки.
+    // Нажать на иконку в виде плюса в кружочке.
+    await this.componentPackageInformationPage.clickOnIconPlusInCircle();
+    await this.componentPackageInformationPage.checkButtonCancel();
 
-      // Ввести валидную ссылку на репозиторий
-      await this.componentPackageInformationPage.fillInInputUrl(TestComponentPackage.YA_RU);
-      await this.componentPackageInformationPage.checkTextInInputUrl(TestComponentPackage.YA_RU);
+    // Ввести валидную ссылку на репозиторий
+    await this.componentPackageInformationPage.fillInInputUrl(TestComponentPackage.YA_RU);
+    await this.componentPackageInformationPage.checkTextInInputUrl(TestComponentPackage.YA_RU);
 
-      // Нажать 'Сохранить'
-      await this.componentPackageInformationPage.clickOnIconFloppyDisk();
-      await this.componentPackageInformationPage.checkText({ pageText: TestComponentPackage.LINK_SAVED });
-      await this.componentPackageInformationPage.checkText({ pageText: TestComponentPackage.SOURCE_CODE_IS_INTERNAL });
-      await this.componentPackageInformationPage.checkHref(
-        TestComponentPackage.SOURCE_CODE_IS_INTERNAL,
-        TestComponentPackage.YA_RU,
-        false,
-      );
-    } finally {
-      // Удаление ссылок после автотеста.
-      await this.removeLinks();
-    }
+    // Нажать 'Сохранить'
+    await this.componentPackageInformationPage.clickOnIconFloppyDisk();
+    await this.componentPackageInformationPage.checkText({ pageText: TestComponentPackage.LINK_SAVED });
+    await this.componentPackageInformationPage.checkText({ pageText: TestComponentPackage.SOURCE_CODE_IS_INTERNAL });
+    await this.componentPackageInformationPage.checkHref(
+      TestComponentPackage.SOURCE_CODE_IS_INTERNAL,
+      TestComponentPackage.YA_RU,
+      false,
+    );
+
+    // Удаление ссылок после автотеста.
+    await this.removeLinks();
   }
 
   /** Паспорт пакета компонента, редактирование ссылки на исходный код (Исходный код внутренний). */
   public async testComponentPackageEditingSourceCodeLinkSourceCodeIsInternal(): Promise<void> {
     // TODO проверить тест-кейс (его должны актуализировать), возможно нужно будет изменить автотест после этого
-    try {
-      const linkTfs: string =
-        "http://tfs.example.ru/tfs/exampletc1/TDCode/_versionControl?path=%24%2FTDCode%2Fcontrib" +
-        "%2Faccordsdk%2Ftrunk";
 
-      // 1. Пользователь с правами на редактирование паспортов компонентов и продуктов авторизован в сервисе. Открыт
-      // паспорт пакета компонента, ссылка на исходный код получена автоматически
-      await this.setup();
+    const linkTfs: string =
+      "http://tfs.example.ru/tfs/exampletc1/TDCode/_versionControl?path=%24%2FTDCode%2Fcontrib" +
+      "%2Faccordsdk%2Ftrunk";
 
-      // 2. Нажать на меню справа от ссылки
-      await this.componentPackageInformationPage.clickOnIconMenu();
+    // 1. Пользователь с правами на редактирование паспортов компонентов и продуктов авторизован в сервисе. Открыт
+    // паспорт пакета компонента, ссылка на исходный код получена автоматически
+    await this.setup();
 
-      // 3. Нажать 'Редактировать'
-      await this.componentPackageInformationPage.checkHref(
-        TestComponentPackage.SOURCE_CODE_IS_INTERNAL,
-        linkTfs,
-        false,
-        false,
-      );
-      await this.componentPackageInformationPage.clickOnElementWithText(UITextElements.EDIT);
-      await this.componentPackageInformationPage.checkTextInInputUrl(linkTfs);
+    // 2. Нажать на меню справа от ссылки
+    await this.componentPackageInformationPage.clickOnIconMenu();
 
-      // 4. Внести изменения в URL
-      await this.componentPackageInformationPage.fillInInputUrl(TestComponentPackage.YA_RU);
-      await this.componentPackageInformationPage.checkTextInInputUrl(TestComponentPackage.YA_RU);
+    // 3. Нажать 'Редактировать'
+    await this.componentPackageInformationPage.checkHref(
+      TestComponentPackage.SOURCE_CODE_IS_INTERNAL,
+      linkTfs,
+      false,
+      false,
+    );
+    await this.componentPackageInformationPage.clickOnElementWithText(UITextElements.EDIT);
+    await this.componentPackageInformationPage.checkTextInInputUrl(linkTfs);
 
-      // 5. Нажать 'Сохранить'", async () => {
-      await this.componentPackageInformationPage.clickOnIconFloppyDisk();
-      await this.componentPackageInformationPage.checkText({ pageText: TestComponentPackage.LINK_SAVED });
-      await this.componentPackageInformationPage.checkText({ pageText: TestComponentPackage.SOURCE_CODE_IS_INTERNAL });
-      await this.componentPackageInformationPage.checkHref(
-        TestComponentPackage.SOURCE_CODE_IS_INTERNAL,
-        TestComponentPackage.YA_RU,
-        false,
-      );
+    // 4. Внести изменения в URL
+    await this.componentPackageInformationPage.fillInInputUrl(TestComponentPackage.YA_RU);
+    await this.componentPackageInformationPage.checkTextInInputUrl(TestComponentPackage.YA_RU);
 
-      // 6. Снова нажать меню ссылки
-      await this.componentPackageInformationPage.clickOnIconMenu();
-      await this.componentPackageInformationPage.checkText({ pageText: TestComponentPackage.RETURN_LINK_FROM_SOURCE });
-    } finally {
-      // Возвращение ссылки из источника после автотеста.
-      await this.returnLinkFromSource();
-    }
+    // 5. Нажать 'Сохранить'", async () => {
+    await this.componentPackageInformationPage.clickOnIconFloppyDisk();
+    await this.componentPackageInformationPage.checkText({ pageText: TestComponentPackage.LINK_SAVED });
+    await this.componentPackageInformationPage.checkText({ pageText: TestComponentPackage.SOURCE_CODE_IS_INTERNAL });
+    await this.componentPackageInformationPage.checkHref(
+      TestComponentPackage.SOURCE_CODE_IS_INTERNAL,
+      TestComponentPackage.YA_RU,
+      false,
+    );
+
+    // 6. Снова нажать меню ссылки
+    await this.componentPackageInformationPage.clickOnIconMenu();
+    await this.componentPackageInformationPage.checkText({ pageText: TestComponentPackage.RETURN_LINK_FROM_SOURCE });
+
+    // Возвращение ссылки из источника после автотеста.
+    await this.returnLinkFromSource();
   }
 
   /** Паспорт пакета компонента, вернуть автоссылку на исходный код, подтвердить изменение (Исход. код внутр.). */

@@ -291,8 +291,8 @@ export class TestProductVersionPassport extends BaseTest {
     tempTextComponentsFound = await this.productInformationPage.getTextComponentsFoundWithAnyNumber();
 
     // 8. Нажать 'Сбросить фильтр'
-    const componentCountFirstSymbol = 7;
-    const componentCountLastSymbol = -11;
+    const componentCountFirstSymbol: number = 7;
+    const componentCountLastSymbol: number = -11;
 
     await this.productVersionInformationPage.clickOnResetFiltersButton();
     await this.productVersionInformationPage.checkComboBoxInFilter(UITextElements.TECHNICAL_RADAR_AREA);
@@ -402,8 +402,8 @@ export class TestProductVersionPassport extends BaseTest {
     await this.productVersionInformationPage.checkTableTextValues(firstStringValues);
 
     // 10. 'Не указана' + 'Не входит' + 'Косвенно' + 'Входит'
-    const componentCountFirstSymbol = 7;
-    const componentCountLastSymbol = -11;
+    const componentCountFirstSymbol: number = 7;
+    const componentCountLastSymbol: number = -11;
 
     await this.productVersionInformationPage.clickOnResetFiltersButton();
     await this.productVersionInformationPage.checkTextTotalComponentsWithAnyNumber();
@@ -531,8 +531,8 @@ export class TestProductVersionPassport extends BaseTest {
     await this.productVersionInformationPage.checkTableTextValues(firstStringValues);
 
     // 10. 'Не указана' + 'Да' + 'Косвенно' + 'Нет'
-    const componentCountFirstSymbol = 7;
-    const componentCountLastSymbol = -11;
+    const componentCountFirstSymbol: number = 7;
+    const componentCountLastSymbol: number = -11;
 
     await this.productVersionInformationPage.clickOnResetFiltersButton();
     await this.productVersionInformationPage.checkTextTotalComponentsWithAnyNumber();

@@ -266,84 +266,83 @@ export class TestGroupMarkup extends BaseTest {
     const first_checkbox: number = 1;
     const last_checkbox: number = 3;
 
-    try {
-      // 1. Предусловие: Пользователь с правами редактирования паспортов продуктов авторизован в сервисе, открыт
-      // паспорт версии продукта на вкладке 'Компонентный состав', ФБ и ПА не размечены
-      await this.componentPage.clickOnLinkProducts();
+    // 1. Предусловие: Пользователь с правами редактирования паспортов продуктов авторизован в сервисе, открыт
+    // паспорт версии продукта на вкладке 'Компонентный состав', ФБ и ПА не размечены
+    await this.componentPage.clickOnLinkProducts();
 
-      await this.productPage.clickOnLink(UITextElements.ALL_PRODUCTS);
-      await this.productPage.clickOnLink(Products.VIPNET_CLIENT_4_X_FOR_WINDOWS);
+    await this.productPage.clickOnLink(UITextElements.ALL_PRODUCTS);
+    await this.productPage.clickOnLink(Products.VIPNET_CLIENT_4_X_FOR_WINDOWS);
 
-      await this.productInformationPage.clickOnLink(UITextElements.VERSIONS_TAB);
-      await this.productInformationPage.clickOnLink(Versions.VERSION_VIPNET_CLIENT_4_X_FOR_WINDOWS);
+    await this.productInformationPage.clickOnLink(UITextElements.VERSIONS_TAB);
+    await this.productInformationPage.clickOnLink(Versions.VERSION_VIPNET_CLIENT_4_X_FOR_WINDOWS);
 
-      await this.productVersionInformationPage.clickOnLink(UITextElements.COMPONENT_COMPOSITION);
+    await this.productVersionInformationPage.clickOnLink(UITextElements.COMPONENT_COMPOSITION);
 
-      // 2. Выбрать 2-3 компонента с помощью чекбоксов
-      for (let i: number = first_checkbox; i <= last_checkbox; i++) {
-        await this.productVersionInformationPage.clickOnCheckboxInTable(i);
-      }
-
-      await this.productVersionInformationPage.checkText({ pageText: UITextElements.THREE_CHOSEN });
-      await this.productVersionInformationPage.checkText({ pageText: UITextElements.SECURITY_FUNCTION });
-      await this.productVersionInformationPage.checkText({ pageText: UITextElements.ATTACK_SURFACE });
-      await this.productVersionInformationPage.checkText({ pageText: UITextElements.TRANSFER_MARKUP });
-      await this.productVersionInformationPage.checkCheckboxComponentInTable();
-
-      await this.checkCheckboxesInTable();
-
-      // 3. Открыть выпадающий список 'Функция безопасности'
-      await this.productVersionInformationPage.clickOnElementWithText(UITextElements.SECURITY_FUNCTION);
-      await this.productVersionInformationPage.checkIndicationInListSecurityFunction(Colors.GREEN);
-      await this.productVersionInformationPage.checkIndicationInListSecurityFunction(Colors.YELLOW);
-      await this.productVersionInformationPage.checkIndicationInListSecurityFunction(Colors.RED);
-      await this.productVersionInformationPage.checkIndicationInListSecurityFunction(Colors.GREY);
-
-      // 4. В списке выбрать произвольное значение функции безопасности
-      await this.productVersionInformationPage.clickOnElementWithText(UITextElements.YES);
-      await this.productVersionInformationPage.checkButtonWithText(UITextElements.NO);
-
-      // 5. Нажать кнопку 'Да'
-      const values: string[] = [
-        " ",
-        Components.ACETAO,
-        RadarAreaValues.RADAR_AREA_IS_UNKNOWN,
-        "6.4.6.67",
-        UITextElements.YES,
-        "",
-        UITextElements.NOT_SPECIFIED,
-        "",
-      ];
-
-      await this.productVersionInformationPage.clickOnButtonWithText(UITextElements.YES);
-      await this.productVersionInformationPage.checkVisibilityIndication(Colors.GREEN);
-      await this.productVersionInformationPage.checkText({ pageText: this.GROUP_MARKUP });
-      await this.productVersionInformationPage.checkText({ pageText: "Информация о компонентах успешно обновлена" });
-      await this.productVersionInformationPage.checkText({ pageText: RegularExpressions.PATTERN_STRING_TIME });
-      await this.productVersionInformationPage.clickOnCloseMessageIcon();
-      await this.productVersionInformationPage.checkTableHeadings(Lists.TITLES_TABLE_COMPONENT_COMPOSITION);
-      await this.productVersionInformationPage.checkTableTextValues(values);
-
-      for (let i: number = first_checkbox - 1; i <= last_checkbox - 1; i++) {
-        await this.productVersionInformationPage.checkText({ pageText: UITextElements.YES, nth: i });
-      }
-
-      // 6. Повторить шаги кейса выставив одному компоненту функцию безопасности, используя чекбоксы
-      await this.productVersionInformationPage.clickOnCheckboxInTable(first_checkbox);
-      await this.productVersionInformationPage.clickOnElementWithText(UITextElements.SECURITY_FUNCTION);
-      await this.productVersionInformationPage.clickOnElementWithText(UITextElements.INDIRECTLY);
-      await this.productVersionInformationPage.checkText({ pageText: this.INFORMATION_MESSAGE_SECURITY_FUNCTION });
-      await this.productVersionInformationPage.clickOnButtonWithText(UITextElements.YES);
-
-      // 7. Повторить шаги кейса выставив всем компонентам функцию безопасности
-      await this.productVersionInformationPage.clickOnCheckboxInTable(this.CHECKBOX_ALL);
-      await this.productVersionInformationPage.clickOnElementWithText(UITextElements.SECURITY_FUNCTION);
-      await this.productVersionInformationPage.clickOnElementWithText(UITextElements.NO);
-      await this.productVersionInformationPage.clickOnButtonWithText(UITextElements.YES);
-      await this.productVersionInformationPage.clickOnCheckboxInTable(this.CHECKBOX_ALL);
-    } finally {
-      await this.returnSecurityFunctionToAllComponents();
+    // 2. Выбрать 2-3 компонента с помощью чекбоксов
+    for (let i: number = first_checkbox; i <= last_checkbox; i++) {
+      await this.productVersionInformationPage.clickOnCheckboxInTable(i);
     }
+
+    await this.productVersionInformationPage.checkText({ pageText: UITextElements.THREE_CHOSEN });
+    await this.productVersionInformationPage.checkText({ pageText: UITextElements.SECURITY_FUNCTION });
+    await this.productVersionInformationPage.checkText({ pageText: UITextElements.ATTACK_SURFACE });
+    await this.productVersionInformationPage.checkText({ pageText: UITextElements.TRANSFER_MARKUP });
+    await this.productVersionInformationPage.checkCheckboxComponentInTable();
+
+    await this.checkCheckboxesInTable();
+
+    // 3. Открыть выпадающий список 'Функция безопасности'
+    await this.productVersionInformationPage.clickOnElementWithText(UITextElements.SECURITY_FUNCTION);
+    await this.productVersionInformationPage.checkIndicationInListSecurityFunction(Colors.GREEN);
+    await this.productVersionInformationPage.checkIndicationInListSecurityFunction(Colors.YELLOW);
+    await this.productVersionInformationPage.checkIndicationInListSecurityFunction(Colors.RED);
+    await this.productVersionInformationPage.checkIndicationInListSecurityFunction(Colors.GREY);
+
+    // 4. В списке выбрать произвольное значение функции безопасности
+    await this.productVersionInformationPage.clickOnElementWithText(UITextElements.YES);
+    await this.productVersionInformationPage.checkButtonWithText(UITextElements.NO);
+
+    // 5. Нажать кнопку 'Да'
+    const values: string[] = [
+      " ",
+      Components.ACETAO,
+      RadarAreaValues.RADAR_AREA_IS_UNKNOWN,
+      "6.4.6.67",
+      UITextElements.YES,
+      "",
+      UITextElements.NOT_SPECIFIED,
+      "",
+    ];
+
+    await this.productVersionInformationPage.clickOnButtonWithText(UITextElements.YES);
+    await this.productVersionInformationPage.checkVisibilityIndication(Colors.GREEN);
+    await this.productVersionInformationPage.checkText({ pageText: this.GROUP_MARKUP });
+    await this.productVersionInformationPage.checkText({ pageText: "Информация о компонентах успешно обновлена" });
+    await this.productVersionInformationPage.checkText({ pageText: RegularExpressions.PATTERN_STRING_TIME });
+    await this.productVersionInformationPage.clickOnCloseMessageIcon();
+    await this.productVersionInformationPage.checkTableHeadings(Lists.TITLES_TABLE_COMPONENT_COMPOSITION);
+    await this.productVersionInformationPage.checkTableTextValues(values);
+
+    for (let i: number = first_checkbox - 1; i <= last_checkbox - 1; i++) {
+      await this.productVersionInformationPage.checkText({ pageText: UITextElements.YES, nth: i });
+    }
+
+    // 6. Повторить шаги кейса выставив одному компоненту функцию безопасности, используя чекбоксы
+    await this.productVersionInformationPage.clickOnCheckboxInTable(first_checkbox);
+    await this.productVersionInformationPage.clickOnElementWithText(UITextElements.SECURITY_FUNCTION);
+    await this.productVersionInformationPage.clickOnElementWithText(UITextElements.INDIRECTLY);
+    await this.productVersionInformationPage.checkText({ pageText: this.INFORMATION_MESSAGE_SECURITY_FUNCTION });
+    await this.productVersionInformationPage.clickOnButtonWithText(UITextElements.YES);
+
+    // 7. Повторить шаги кейса выставив всем компонентам функцию безопасности
+    await this.productVersionInformationPage.clickOnCheckboxInTable(this.CHECKBOX_ALL);
+    await this.productVersionInformationPage.clickOnElementWithText(UITextElements.SECURITY_FUNCTION);
+    await this.productVersionInformationPage.clickOnElementWithText(UITextElements.NO);
+    await this.productVersionInformationPage.clickOnButtonWithText(UITextElements.YES);
+    await this.productVersionInformationPage.clickOnCheckboxInTable(this.CHECKBOX_ALL);
+
+    // Возвращение первоначального значения функции безопасности всем компонентам.
+    await this.returnSecurityFunctionToAllComponents();
   }
 
   /** Возвращение первоначального значения функции безопасности всем компонентам. */
